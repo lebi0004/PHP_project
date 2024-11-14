@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 <!DOCTYPE html>
 <html lang="en" style="position: relative; min-height: 100%;">
 <head>
-    <title>Online Course Registration</title>
+    <title>Algonquin Social Media</title>
     <meta charset="utf-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Latest Bootstrap 5 CSS link -->
