@@ -3,31 +3,14 @@ include_once 'EntityClassLib.php';
 
 // Get PDO connection using Lab5.ini configuration
 function getPDO() {
-    // Parse the Lab5.ini file to get the database connection details
     $dbConnection = parse_ini_file("cst8257project.ini");
     extract($dbConnection);
 
-    // Create a new PDO connection using the extracted information
     $pdo = new PDO($dsn, $scriptUser, $scriptPassword);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     return $pdo;
 }
-
-// Function to get a user by Student ID and Password (for login)
-/*function getUserByIdAndPassword($userId, $password) {
-    $pdo = getPDO();
-    $sql = "SELECT StudentId, Name, Phone, Password FROM Student WHERE StudentId = :userId";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':userId', $userId);
-    $stmt->execute();
-
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($row && password_verify($password, $row['Password'])) {
-        return new User($row['StudentId'], $row['Name'], $row['Phone'], $row['Password']);
-    }
-    return null;
-}*/
 
 function getUserByIdAndPassword($userId, $password) {
     $pdo = getPDO();
@@ -43,17 +26,6 @@ function getUserByIdAndPassword($userId, $password) {
     return null;
 }
 
-// Function to add a new user to the Student table (used for registration)
-
-/*function addNewUser($userId, $name, $phone, $password)
-{
-    $pdo = getPDO();
-   
-    $sql = "INSERT INTO User VALUES( :UserId, :name, :phone, :password)";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(['UserId' => $userId, 'name' => $name, 'phone' => $phone, 'password' => $password]);
-}*/
-
 function addNewUser($userId, $name, $phone, $password) {
     $pdo = getPDO();
     $sql = "INSERT INTO User (UserId, Name, Phone, Password) VALUES (:UserId, :name, :phone, :password)";
@@ -66,18 +38,6 @@ function addNewUser($userId, $name, $phone, $password) {
     ]);
 }
 
-
-
-// Function to check if a student already exists by Student ID
-/*function getStudentById($userId) {
-    $pdo = getPDO();
-    $sql = "SELECT StudentId FROM Student WHERE StudentId = :userId";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':userId', $userId);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}*/
-
 function getUserById($userId) {
     $pdo = getPDO();
     $sql = "SELECT UserId FROM User WHERE UserId = :userId";
@@ -87,60 +47,43 @@ function getUserById($userId) {
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
-
-
-
-// Get all semesters
-function getAllSemesters() {
+function getUserAlbums($userId) {
     $pdo = getPDO();
-    $sql = "SELECT * FROM Semester";
+    $sql = "SELECT a.Album_Id, a.Title, 
+                   a.Description, a.Accessibility_Code, 
+                   COUNT(p.Picture_Id) as PictureCount 
+            FROM Album a 
+            LEFT JOIN Picture p ON a.Album_Id = p.Album_Id 
+            WHERE a.Owner_Id = :owner_id 
+            GROUP BY a.Album_Id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':owner_id', $userId);
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getAccessibilityOptions() {
+    $pdo = getPDO();
+    $sql = "SELECT Accessibility_Code, Description FROM Accessibility";
     $stmt = $pdo->query($sql);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Get registered hours for a user in a semester
-function getRegisteredHours($studentId, $semesterCode) {
+function updateAlbumAccessibility($albumId, $newAccessibility) {
     $pdo = getPDO();
-    $sql = "SELECT SUM(C.WeeklyHours) as RegisteredHours 
-            FROM Registration R
-            JOIN Course C ON R.CourseCode = C.CourseCode
-            WHERE R.StudentId = :studentId AND R.SemesterCode = :semesterCode";
+    $sql = "UPDATE Album SET Accessibility_Code = :accessibility WHERE Album_Id = :album_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':studentId', $studentId);
-    $stmt->bindValue(':semesterCode', $semesterCode);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $row ? $row['RegisteredHours'] : 0;
+    $stmt->execute([
+        ':accessibility' => $newAccessibility,
+        ':album_id' => $albumId
+    ]);
 }
 
-// Get courses available for a semester, excluding those already registered by the user
-function getCoursesForSemester($semesterCode, $studentId) {
+function deleteAlbum($albumId) {
     $pdo = getPDO();
-    $sql = "SELECT Course.CourseCode, Course.Title, Course.WeeklyHours
-            FROM Course
-            INNER JOIN CourseOffer ON Course.CourseCode = CourseOffer.CourseCode
-            WHERE CourseOffer.SemesterCode = :semesterCode
-            AND Course.CourseCode NOT IN (
-                SELECT CourseCode FROM Registration WHERE StudentId = :studentId AND SemesterCode = :semesterCode
-            )";
+    $sql = "DELETE FROM Album WHERE Album_Id = :album_id";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':semesterCode', $semesterCode);
-    $stmt->bindValue(':studentId', $studentId);
+    $stmt->bindValue(':album_id', $albumId);
     $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-// Get all courses a student has registered for
-function getRegisteredCourses($studentId) {
-    $pdo = getPDO();
-    $sql = "SELECT C.CourseCode, C.Title, C.WeeklyHours, S.SemesterCode, S.Year, S.Term
-            FROM Course C
-            INNER JOIN Registration R ON C.CourseCode = R.CourseCode
-            INNER JOIN Semester S ON R.SemesterCode = S.SemesterCode
-            WHERE R.StudentId = :studentId";
-    $stmt = $pdo->prepare($sql);
-    $stmt->bindValue(':studentId', $studentId);
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
+?>
