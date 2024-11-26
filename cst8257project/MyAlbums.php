@@ -114,3 +114,4 @@ if (isset($_GET['delete_album'])) {
 </div>
 </body>
 </html>
+<?php include('./common/footer.php'); ?>
