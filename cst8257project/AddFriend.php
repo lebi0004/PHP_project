@@ -7,13 +7,14 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof User)) {
     $_SESSION['redirect_url'] = basename($_SERVER['PHP_SELF']);
-    header("Location: Login.php");
+    header("Location: Login.php"); // Redirect to login page
     exit();
-} else {
-    $user = $_SESSION['user'];
 }
+
+// Get the logged-in user
+$user = $_SESSION['user'];
 
 include("./common/header.php");
 

@@ -35,11 +35,10 @@ if (isset($btnLogin)) {
     }
 }
 ?>
-
-<div class="container" style="padding-top: 70px;">
+<div class="container mt-2">
     <form action='Login.php' method='post' class="mx-auto" style="max-width: 400px;">
-        <h1 class="text-center">Login</h1>
-        <p class="text-center">You need to <a href='NewUser.php' class="text-decoration-none">sign up</a> if you are a new user.</p>
+        <h1 class="text-center display-6 animated-border">Login</h1>
+        <p class="text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
 
         <div class="mb-3">
             <div class="text-danger">

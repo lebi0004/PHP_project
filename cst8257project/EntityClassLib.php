@@ -151,7 +151,14 @@ class Album {
     }
 
     public static function delete($albumId) {
-        $pdo = getPDO(); // Use the reusable connection
+        $pdo = getPDO();
+        $album = Album::read($albumId);
+        $pictures = $album->fetchAllPictures();
+        if (count($pictures) > 0) {
+            foreach ($pictures as $picture) {
+                Picture::delete($picture->getPictureId());
+            }
+        }
         $stmt = $pdo->prepare("DELETE FROM album WHERE Album_Id = ?");
         if (!$stmt->execute([$albumId])) {
             throw new Exception("Error deleting album: " . $stmt->errorInfo());
@@ -226,7 +233,7 @@ class Picture {
     }
 
     public function saveToUploadFolder($tmpFilePath, $albumId) {
-        $uploadDir = "uploads/album_$albumId/";
+        $uploadDir = "./uploads/album_$albumId/";
 
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -266,11 +273,19 @@ class Picture {
 
     public static function delete($pictureId) {
         $pdo = getPDO();
+        $picture = Picture::read($pictureId);
+        $filePath = $picture->getFilePath();
         $stmt = $pdo->prepare("DELETE FROM picture WHERE Picture_Id = ?");
         $stmt->execute([$pictureId]);
 
         if ($stmt->rowCount() === 0) {
             throw new Exception("Error deleting picture: " . $stmt->errorInfo());
+        }
+
+        if (file_exists($filePath)) {
+            if (!unlink($filePath)) {
+                throw new Exception("Error deleting picture file from the file system.");
+            }
         }
     }
 }

@@ -22,9 +22,11 @@ if (session_status() == PHP_SESSION_NONE) {
       margin-top: 40px;
     }
 
+    a {
+        text-decoration: none;
+    }
+
     .animated-border {
-      position: relative;
-      display: inline-block;
       padding: 5px;
       text-align: center;
       background: linear-gradient(90deg, red, blue, green, yellow, red);
@@ -32,7 +34,34 @@ if (session_status() == PHP_SESSION_NONE) {
       background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: borderAnimation 5s linear infinite;
+      animation: borderAnimation 5s linear infinite alternate, fadeInOut 5s ease-in-out infinite;
+    }
+
+    .disappearing-message {
+      animation: disappear 5s forwards;
+    }
+
+    @keyframes disappear {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInOut {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
 
     @keyframes borderAnimation {
@@ -58,10 +87,10 @@ if (session_status() == PHP_SESSION_NONE) {
   </style>
 <body>
     <div class="wrapper mb-5" style="display: flex; flex-direction: column;">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-2">
             <div class="container-fluid">
                 <a class="navbar-brand" href="http://www.algonquincollege.com" style="padding: 10px">
-                    <img src="Common/img/AC2.png" alt="Algonquin College" style="max-width:100%; max-height:100%;" />
+                    <img src="Common/img/AC2.png" alt="Algonquin College" style="max-height: 30px; width:auto;"/>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -83,8 +112,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         <li class="nav-item">
                             <a class="nav-link" href="UploadPictures.php">Upload Pictures</a>
                         </li>
-                        
-                        <li class="nav-item">
+                        <li class="nav-item ms-auto">
                             <?php if (isset($_SESSION['user'])): ?>
                                 <a class="nav-link" href="Logout.php">Log Out</a>
                             <?php else: ?>
