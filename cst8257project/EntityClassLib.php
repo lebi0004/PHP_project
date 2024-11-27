@@ -188,6 +188,7 @@ class Picture {
     private $fileName;
     private $title;
     private $description;
+    private $comments;
 
     public function __construct($fileName, $albumId, $title = null, $description = null, $pictureId = null) {
         $this->pictureId = $pictureId; 
@@ -217,9 +218,14 @@ class Picture {
         return $this->description;
     }
 
+    public function getComments() {
+        return $this->comments;
+    }
+
     public function setPictureId($pictureId) {
         $this->pictureId = $pictureId;
     }
+
 
     public function create() {
         $pdo = getPDO();
