@@ -64,7 +64,10 @@ if (isset($_GET['delete_album'])) {
     });
 </script>
 
+
 <div class="container mb-5">
+    
+<div class="shadow p-4 mb-5 bg-body-tertiary rounded" style="max-width: 800px; margin: auto;">
     <h1 class="mb-4">My Albums</h1>
     <p>Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
     <a href="AddAlbum.php" class="btn btn-primary mb-3">Create a New Album</a>
@@ -116,5 +119,7 @@ if (isset($_GET['delete_album'])) {
 
 
 </div>
+    </div>
+
 
 <?php include('./common/footer.php'); ?>
