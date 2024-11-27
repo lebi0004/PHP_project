@@ -3,7 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-include("./common/header.php"); 
+include("./common/header.php");
 include_once 'Functions.php';
 include_once 'EntityClassLib.php';
 
@@ -14,15 +14,15 @@ if (isset($btnLogin)) {
     try {
         // Fetch the user by ID and password
         $user = getUserByIdAndPassword($txtId, $txtPswd);
-        
+
         if ($user) {
             // Log in the user
             $_SESSION['user'] = $user;
-            
+
             // Check if there's a redirect URL stored in session
-          $redirectUrl = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'index.php';
-// Clear the redirect URL from session
-            
+            $redirectUrl = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'index.php';
+            // Clear the redirect URL from session
+
             // Redirect to the stored page or default to CourseSelection.php
             header("Location: $redirectUrl");
             exit();
@@ -39,7 +39,7 @@ if (isset($btnLogin)) {
 <div class="container" style="padding-top: 70px;">
     <form action='Login.php' method='post' class="mx-auto" style="max-width: 400px;">
         <h1 class="text-center">Login</h1>
-        <p class="text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
+        <p class="text-center">You need to <a href='NewUser.php' class="text-decoration-none">sign up</a> if you are a new user.</p>
 
         <div class="mb-3">
             <div class="text-danger">

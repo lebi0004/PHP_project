@@ -1,18 +1,26 @@
-<?php include("./common/header.php"); ?>
+<?php 
+include_once 'Functions.php';
+include("./common/header.php");
 
+$user = $_SESSION['user'] ?? null;
 
-<div class="container" style="padding-top: 70px;"> <!-- Added padding here -->
-    <div class="row mb-3 align-items-center justify-content-center">
-        <div class="col-lg-8">
-            <h1 class="display-6">Welcome to Algonquin Social Media Website <span class="text-primary"></span>!</h1>
-<!--            <h4 class="my-4">If you never used this before, you have to sing up first.</h4>-->
-            
-<h4 class="my-4"> If you never used this before, you have to <a href="NewUser.php" style="text-decoration: none;">sign up</a> first.</h4>
-<h4 class="my-4"> If you have already signed up, you can <a href="Login.php" style="text-decoration: none;">log in</a> now.</h4>
-           
+?>
+<div class="container mb-3">
+    <div class="card border-light">
+        <div class="card-body">
+            <h1 class="card-title text-start text-dark mb-3 display-6 animated-border">Welcome to Algonquin Social Media Website<span class="text-primary"></span>!</h1>
+            <?php if (isset($user)) { ?>
+                <p class="card-text text-start text-dark mb-3 display-6 animated-border">
+                    Hello, <?= $user->getName() ?>! <br><br>
+                </p>
+            <?php } else { ?>
+                <p class="card-text fs-5">
+                    If this is your first time, please <a class="text-decoration-none" href="./NewUser.php">sign up</a>.<br><br>
+                    Already have an account? <a class="text-decoration-none" href="./Login.php">Log in</a> now.
+                </p>
+            <?php } ?>
         </div>
     </div>
 </div>
 
-    
 <?php include('./common/footer.php'); ?>

@@ -67,8 +67,8 @@ include("./common/header.php");
 
 ?>
 
-<h1 class="display-5 mt-5 text-center">Upload Pictures</h1>
-<div class="container mb-5">
+<h1 class="display-5 text-center">Upload Pictures</h1>
+<div class="container">
     <p class="lead">
         Accepted image types: jpg, jpeg, gif and png. <br>
         You can upload multiple pictures at a time by holding the shift key while selecting images. <br>
@@ -81,12 +81,11 @@ include("./common/header.php");
         </div>
     <?php endif; ?>
 
-
     <form class="my-3" action="UploadPictures.php" method="post" enctype="multipart/form-data">
         <div class="form-group mb-4">
             <label for="albumId">Upload to Album</label>
             <select class="form-control" name="albumId" id="albumId">
-                <option value="" disabled selected>Select an Album ...</option>
+                <option value="" disabled selected>-- Select an Album --</option>
                 <?php foreach ($albums as $album): ?>
                     <option value="<?= $album->getAlbumId(); ?>"><?= $album->getTitle(); ?></option>
                 <?php endforeach; ?>
@@ -105,8 +104,8 @@ include("./common/header.php");
             <textarea class="form-control" name="txtDescription" id="txtDescription"></textarea>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary mb-5" name="btnUpload">Submit</button>
-            <button type="reset" class="btn btn-secondary mb-5">Clear</button>
+            <button type="submit" class="btn btn-primary" name="btnUpload">Submit</button>
+            <button type="reset" class="btn btn-secondary">Clear</button>
         </div>
     </form>
 </div>

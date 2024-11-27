@@ -35,10 +35,12 @@ if (isset($regSubmit)) {
         $errors['txtPhoneNumber'] = "Phone Number must be in the format nnn-nnn-nnnn.";
     }
 
-    if (strlen($txtPassword) < 6 ||
-            !preg_match("/[A-Z]/", $txtPassword) ||
-            !preg_match("/[a-z]/", $txtPassword) ||
-            !preg_match("/\d/", $txtPassword)) {
+    if (
+        strlen($txtPassword) < 6 ||
+        !preg_match("/[A-Z]/", $txtPassword) ||
+        !preg_match("/[a-z]/", $txtPassword) ||
+        !preg_match("/\d/", $txtPassword)
+    ) {
         $errors['txtPassword'] = "Password must be at least 6 characters long, and contain at least one uppercase letter, one lowercase letter, and one digit.";
     }
 
@@ -64,7 +66,8 @@ if (isset($regSubmit)) {
             // Hash the password before storing
             $hashedPassword = password_hash($txtPassword, PASSWORD_DEFAULT);
             addNewUser($txtId, $txtName, $txtPhoneNumber, $hashedPassword);
-            header("Location: Login.php");
+            $_SESSION['user'] = getUserByIdAndPassword($txtId, $txtPassword);
+            header("Location: index.php");
             exit();
         } catch (Exception $e) {
             die("The system is currently not available, try again later.");
@@ -72,63 +75,64 @@ if (isset($regSubmit)) {
     }
 }
 ?>
-<html>
-    <head>
-        <title>Algonquin College Social Media</title>
-    </head>
-    <body>
-        <form action="NewUser.php" method="post" class="mx-auto" style="max-width: 400px;">
-            <div class="text-center" style="padding-top: 70px;">
-                <h1 class="display-4">Sign up</h1>
-                <p class="display-7">All fields are required</p>
-            </div>
 
-            <div class="row mb-3">
-                <label for="studentId" class="col-sm-4 col-form-label text-end">User ID:</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="studentId" name="txtId" value="<?php echo htmlspecialchars($txtId); ?>">
-                    <div class="text-danger"><?php echo isset($errors['txtId']) ? $errors['txtId'] : ''; ?></div>
+<section class="container text-start mb-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form action="NewUser.php" method="post" class="p-4 border bg bg-light rounded shadow">
+                <div class="text-center">
+                    <h1 class="display-4">Sign up</h1>
+                    <p class="display-7">All fields are required</p>
                 </div>
-            </div>
 
-            <div class="row mb-3">
-                <label for="studentName" class="col-sm-4 col-form-label text-end">Name:</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="studentName" name="txtName" value="<?php echo htmlspecialchars($txtName); ?>">
-                    <div class="text-danger"><?php echo isset($errors['txtName']) ? $errors['txtName'] : ''; ?></div>
+                <div class="row mb-3">
+                    <label for="studentId" class="col-sm-4 col-form-label">User ID:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="studentId" name="txtId" value="<?php echo htmlspecialchars($txtId); ?>">
+                        <div class="text-danger"><?php echo isset($errors['txtId']) ? $errors['txtId'] : ''; ?></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3">
-                <label for="phoneNumber" class="col-sm-4 col-form-label text-end">Phone Number:</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control" id="phoneNumber" name="txtPhoneNumber" value="<?php echo htmlspecialchars($txtPhoneNumber); ?>">
-                    <div class="text-danger"><?php echo isset($errors['txtPhoneNumber']) ? $errors['txtPhoneNumber'] : ''; ?></div>
+                <div class="row mb-3">
+                    <label for="studentName" class="col-sm-4 col-form-label">Name:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="studentName" name="txtName" value="<?php echo htmlspecialchars($txtName); ?>">
+                        <div class="text-danger"><?php echo isset($errors['txtName']) ? $errors['txtName'] : ''; ?></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3">
-                <label for="createPassword" class="col-sm-4 col-form-label text-end">Password:</label>
-                <div class="col-sm-8">
-                    <input type="password" class="form-control" id="createPassword" name="txtPassword">
-                    <div class="text-danger"><?php echo isset($errors['txtPassword']) ? $errors['txtPassword'] : ''; ?></div>
+                <div class="row mb-3">
+                    <label for="phoneNumber" class="col-sm-4 col-form-label">Phone Number:</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="phoneNumber" name="txtPhoneNumber" value="<?php echo htmlspecialchars($txtPhoneNumber); ?>">
+                        <div class="text-danger"><?php echo isset($errors['txtPhoneNumber']) ? $errors['txtPhoneNumber'] : ''; ?></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="row mb-3">
-                <label for="confirmPassword" class="col-sm-4 col-form-label text-end">Password Again:</label>
-                <div class="col-sm-8">
-                    <input type="password" class="form-control" id="confirmPassword" name="txtPasswordConfirm">
-                    <div class="text-danger"><?php echo isset($errors['txtPasswordConfirm']) ? $errors['txtPasswordConfirm'] : ''; ?></div>
+                <div class="row mb-3">
+                    <label for="createPassword" class="col-sm-4 col-form-label">Password:</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="createPassword" name="txtPassword">
+                        <div class="text-danger"><?php echo isset($errors['txtPassword']) ? $errors['txtPassword'] : ''; ?></div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="text-center">
-                <button type="submit" name="regSubmit" class="btn btn-primary">Submit</button>
-                <button type="reset" class="btn btn-secondary">Clear</button>
-            </div>
-        </form>
-    </body>
-</html>
+                <div class="row mb-3">
+                    <label for="confirmPassword" class="col-sm-4 col-form-label">Password Again:</label>
+                    <div class="col-sm-8">
+                        <input type="password" class="form-control" id="confirmPassword" name="txtPasswordConfirm">
+                        <div class="text-danger"><?php echo isset($errors['txtPasswordConfirm']) ? $errors['txtPasswordConfirm'] : ''; ?></div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" name="regSubmit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-secondary">Clear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
 
 <?php include('./common/footer.php'); ?>

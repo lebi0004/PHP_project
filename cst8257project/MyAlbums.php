@@ -41,43 +41,43 @@ if (isset($_GET['delete_album'])) {
     $albumId = $_GET['delete_album'];
     try {
         deleteAlbum($albumId);
-        echo "<div class='alert alert-success'>Album deleted successfully!</div>";
+        $successMessage = "Album deleted successfully!";
     } catch (Exception $e) {
         echo "<div class='alert alert-danger'>Error: " . $e->getMessage() . "</div>";
     }
-    header("Location: MyAlbums.php");
-    exit();
+    $albums = getUserAlbums($user->getUserId());
 }
 ?>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>My Albums</title>
-    <script>
-        // Function to hide success message after a few seconds
-        function hideMessage() {
-            const messageElement = document.getElementById('successMessage');
-            if (messageElement) {
-                setTimeout(() => {
-                    messageElement.style.display = 'none';
-                }, 3000); // Hide after 3 seconds
-            }
+<script>
+    // Function to hide success message after a few seconds
+    function hideMessage() {
+        const messageElement = document.querySelector('.alert');
+        if (messageElement) {
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 3000); // Hide after 3 seconds
         }
-    </script>
-</head>
-<body onload="hideMessage()">
-<div class="container mt-5">
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        hideMessage();
+    });
+</script>
+
+<div class="container mb-5">
     <h1 class="mb-4">My Albums</h1>
     <p>Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
     <a href="AddAlbum.php" class="btn btn-primary mb-3">Create a New Album</a>
-    
+
     <!-- Success message -->
     <?php if (!empty($successMessage)): ?>
         <div id="successMessage" class="alert alert-success"><?php echo $successMessage; ?></div>
-    <?php endif; ?>
-
-    <form method="post" action="MyAlbums.php">
+    <?php endif; 
+    if (empty($albums)) {
+        echo "<p class='display-6 text-center mx-5 mt-3'>You have not created any albums yet.</p>";
+    } else {
+        ?>
+     <form method="post" action="MyAlbums.php">
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
@@ -90,12 +90,12 @@ if (isset($_GET['delete_album'])) {
             <tbody>
                 <?php foreach ($albums as $album): ?>
                     <tr>
-                        <td><a href="MyPictures.php?album_id=<?php echo $album['Album_Id']; ?>"><?php echo htmlspecialchars($album['Title']); ?></a></td>
+                        <td><a href="MyPictures.php?album_id=<?php echo $album['Album_Id']; ?>" class="text-decoration-none"><?php echo htmlspecialchars($album['Title']); ?></a></td>
                         <td><?php echo $album['PictureCount']; ?></td>
                         <td>
                             <select class="form-select" name="accessibility[<?php echo $album['Album_Id']; ?>]">
                                 <?php foreach ($options as $option): ?>
-                                    <option value="<?php echo $option['Accessibility_Code']; ?>" 
+                                    <option value="<?php echo $option['Accessibility_Code']; ?>"
                                         <?php echo ($album['Accessibility_Code'] == $option['Accessibility_Code']) ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($option['Description']); ?>
                                     </option>
@@ -111,7 +111,10 @@ if (isset($_GET['delete_album'])) {
         </table>
         <button type="submit" name="save_changes" class="btn btn-success">Save Changes</button>
     </form>
+    <?php }
+    ?>
+
+
 </div>
-</body>
-</html>
+
 <?php include('./common/footer.php'); ?>
