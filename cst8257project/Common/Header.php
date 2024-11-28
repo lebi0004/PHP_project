@@ -38,7 +38,7 @@ if (session_status() == PHP_SESSION_NONE) {
     }
 
     .disappearing-message {
-      animation: disappear 5s forwards;
+      animation: disappear 7s forwards;
     }
 
     @keyframes disappear {

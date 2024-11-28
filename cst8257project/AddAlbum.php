@@ -52,8 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 'owner_id' => $user->getUserId()
             ]);
             echo "<div class='alert alert-success'>Album added successfully!</div>";
-            // Redirect to another page
-            header("Location: MyAlbums.php");
+            header("refresh:3;url=MyAlbums.php");
             exit();
         } catch (Exception $e) {
             echo "<div class='alert alert-danger'>Error: " . $e->getMessage() . "</div>";
