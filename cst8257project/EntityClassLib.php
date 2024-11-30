@@ -1,14 +1,16 @@
 <?php
 
 include_once 'functions.php';
-class User {
+class User
+{
     private $userId;
     private $name;
     private $phone;
     private $password; // Add this property to store the hashed password
 
     // Constructor to initialize the User object
-    public function __construct($userId, $name, $phone, $password) {
+    public function __construct($userId, $name, $phone, $password)
+    {
         $this->userId = $userId;
         $this->name = $name;
         $this->phone = $phone;
@@ -16,24 +18,29 @@ class User {
     }
 
     // Getter methods to retrieve user properties
-    public function getUserId() {
+    public function getUserId()
+    {
         return $this->userId;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function getPhone() {
+    public function getPhone()
+    {
         return $this->phone;
     }
 
     // Getter for the hashed password
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
-    public function fetchAllAlbums() {
+    public function fetchAllAlbums()
+    {
         $pdo = getPDO();
         $stmt = $pdo->prepare("SELECT * FROM album WHERE Owner_Id = ?");
         $stmt->execute([$this->userId]);
@@ -47,14 +54,16 @@ class User {
     }
 }
 
-class Album {
+class Album
+{
     private $albumId;
     private $title;
     private $description;
     private $accessibilityCode;
     private $ownerId;
 
-    public function __construct($title, $description, $accessibilityCode, $ownerId, $albumId = null) {
+    public function __construct($title, $description, $accessibilityCode, $ownerId, $albumId = null)
+    {
         $this->albumId = $albumId;
         $this->title = $title;
         $this->description = $description;
@@ -62,60 +71,69 @@ class Album {
         $this->ownerId = $ownerId;
     }
 
-    public function getAlbumId() {
+    public function getAlbumId()
+    {
         return $this->albumId;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
-    public function getAccessibilityCode() {
+    public function getAccessibilityCode()
+    {
         return $this->accessibilityCode;
     }
 
-    public function getOwnerId() {
+    public function getOwnerId()
+    {
         return $this->ownerId;
     }
 
-    public function setAlbumId($albumId) {
+    public function setAlbumId($albumId)
+    {
         $this->albumId = $albumId;
     }
 
-    public function setTitle($title) {
+    public function setTitle($title)
+    {
         $this->title = $title;
     }
 
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
-    public function setAccessibilityCode($accessibilityCode) {
+    public function setAccessibilityCode($accessibilityCode)
+    {
         $this->accessibilityCode = $accessibilityCode;
     }
 
-    public function setOwnerId($ownerId) {
+    public function setOwnerId($ownerId)
+    {
         $this->ownerId = $ownerId;
     }
 
 
-    public function create() {
+    public function create()
+    {
         $pdo = getPDO();
         $sql = "INSERT INTO Album (Title, Description, Accessibility_Code, Owner_Id) 
                 VALUES (:title, :description, :accessibility, :owner_id)";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        if ($stmt->execute([
             'title' => $this->title,
             'description' => $this->description,
             'accessibility' => $this->accessibilityCode,
             'owner_id' => $this->ownerId
-        ]);
-
-        if ($stmt->execute()) {
+        ])) {
             $this->albumId = $pdo->lastInsertId();
         } else {
             $errorInfo = $stmt->errorInfo();
@@ -124,21 +142,22 @@ class Album {
     }
 
 
-    public static function read($albumId) {
+    public static function read($albumId)
+    {
         $pdo = getPDO();
         $stmt = $pdo->prepare("SELECT * FROM album WHERE Album_Id = ?");
         $stmt->execute([$albumId]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($row) {
-            $album = new Album($row['Title'], $row['Description'], $row['Accessibility_Code'], $row['Owner_Id'], $row['Album_Id']);
+            return new Album($row['Title'], $row['Description'], $row['Accessibility_Code'], $row['Owner_Id'], $row['Album_Id']);
         } else {
             throw new Exception("Album not found.");
         }
-        return $album;
     }
 
 
-    public function update() {
+    public function update()
+    {
         if ($this->albumId === null) {
             throw new Exception("Cannot update album without an Album_Id.");
         }
@@ -146,11 +165,13 @@ class Album {
         $pdo = getPDO();
         $stmt = $pdo->prepare("UPDATE album SET Title = ?, Description = ?, Accessibility_Code = ?, Owner_Id = ? WHERE Album_Id = ?");
         if (!$stmt->execute([$this->title, $this->description, $this->accessibilityCode, $this->ownerId, $this->albumId])) {
-            throw new Exception("Error updating album: " . $stmt->errorInfo());
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception("Error updating album: " . $errorInfo[2]);
         }
     }
 
-    public static function delete($albumId) {
+    public static function delete($albumId)
+    {
         $pdo = getPDO();
         $album = Album::read($albumId);
         $pictures = $album->fetchAllPictures();
@@ -161,12 +182,14 @@ class Album {
         }
         $stmt = $pdo->prepare("DELETE FROM album WHERE Album_Id = ?");
         if (!$stmt->execute([$albumId])) {
-            throw new Exception("Error deleting album: " . $stmt->errorInfo());
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception("Error updating album: " . $errorInfo[2]);
         }
     }
 
 
-    public function fetchAllPictures() {
+    public function fetchAllPictures()
+    {
         $pdo = getPDO();
         $stmt = $pdo->prepare("SELECT * FROM picture WHERE Album_Id = ?");
         $stmt->execute([$this->albumId]);
@@ -181,53 +204,67 @@ class Album {
 }
 
 
-class Picture {
+class Picture
+{
 
     private $pictureId;
     private $albumId;
     private $fileName;
     private $title;
     private $description;
-    private $comments;
 
-    public function __construct($fileName, $albumId, $title = null, $description = null, $pictureId = null) {
-        $this->pictureId = $pictureId; 
+    public function __construct($fileName, $albumId, $title = null, $description = null, $pictureId = null)
+    {
+        $this->pictureId = $pictureId;
         $this->albumId = $albumId;
         $this->fileName = $fileName;
         $this->title = $title;
         $this->description = $description;
     }
 
-    public function getPictureId() {
+    public function getPictureId()
+    {
         return $this->pictureId;
     }
 
-    public function getAlbumId() {
+    public function getAlbumId()
+    {
         return $this->albumId;
     }
 
-    public function getFileName() {
+    public function getFileName()
+    {
         return $this->fileName;
     }
 
-    public function getTitle() {
+    public function getTitle()
+    {
         return $this->title;
     }
 
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
-    public function getComments() {
-        return $this->comments;
+    public function getFilePath()
+    {
+        return "uploads/album_{$this->albumId}/" . $this->fileName;
     }
 
-    public function setPictureId($pictureId) {
+    public function getThumbnailPath()
+    {
+        return "uploads/album_{$this->albumId}/thumbnails/thumbnail_" . $this->fileName;
+    }
+
+    public function setPictureId($pictureId)
+    {
         $this->pictureId = $pictureId;
     }
 
 
-    public function create() {
+    public function create()
+    {
         $pdo = getPDO();
         $stmt = $pdo->prepare("INSERT INTO picture (Album_Id, File_Name, Title, Description) VALUES (?, ?, ?, ?)");
         $stmt->execute([$this->albumId, $this->fileName, $this->title, $this->description]);
@@ -238,30 +275,85 @@ class Picture {
         }
     }
 
-    public function saveToUploadFolder($tmpFilePath, $albumId) {
+    public function saveToUploadFolder($tmpFilePath, $albumId)
+    {
         $uploadDir = "./uploads/album_$albumId/";
+        $thumbnailDir = "./uploads/album_$albumId/thumbnails/";
 
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
+        if (!file_exists($thumbnailDir)) {
+            mkdir($thumbnailDir, 0777, true);
+        }
 
         $uniqueFileName = uniqid() . "_" . basename($this->fileName);
+        $this->fileName = $uniqueFileName;
         $destination = $uploadDir . $uniqueFileName;
 
         if (!move_uploaded_file($tmpFilePath, $destination)) {
             throw new Exception("Failed to upload file.");
         }
-        $this->fileName = $uniqueFileName;
+
+
+        $thumbnailFileName = "thumbnail_" . $uniqueFileName;
+        $thumbnailDestination = $thumbnailDir . $thumbnailFileName;
+        $this->createThumbnail($destination, $thumbnailDestination);
+
 
         return $destination;
     }
 
-    public function getFilePath() {
-        return "uploads/album_{$this->albumId}/" . $this->fileName;
+    public function createThumbnail($originalImagePath, $thumbnailPath, $thumbWidth = 150)
+    {
+        list($width, $height, $type, $attr) = getimagesize($originalImagePath);
+        $imgRatio = $width / $height;
+
+        if ($imgRatio > 1) {
+            $newWidth = $thumbWidth;
+            $newHeight = $thumbWidth / $imgRatio;
+        } else {
+            $newHeight = $thumbWidth;
+            $newWidth = $thumbWidth * $imgRatio;
+        }
+
+        $thumbnail = imagecreatetruecolor($newWidth, $newHeight);
+
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $source = imagecreatefromjpeg($originalImagePath);
+                break;
+            case IMAGETYPE_PNG:
+                $source = imagecreatefrompng($originalImagePath);
+                break;
+            case IMAGETYPE_GIF:
+                $source = imagecreatefromgif($originalImagePath);
+                break;
+            default:
+                throw new Exception("Unsupported image type.");
+        }
+
+        imagecopyresampled($thumbnail, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                imagejpeg($thumbnail, $thumbnailPath);
+                break;
+            case IMAGETYPE_PNG:
+                imagepng($thumbnail, $thumbnailPath);
+                break;
+            case IMAGETYPE_GIF:
+                imagegif($thumbnail, $thumbnailPath);
+                break;
+        }
+
+        imagedestroy($thumbnail);
+        imagedestroy($source);
     }
 
 
-    public static function read($pictureId) {
+    public static function read($pictureId)
+    {
         $pdo = getPDO();
         $stmt = $pdo->prepare("SELECT * FROM picture WHERE Picture_Id = ?");
         $stmt->execute([$pictureId]);
@@ -277,15 +369,19 @@ class Picture {
     }
 
 
-    public static function delete($pictureId) {
+    public static function delete($pictureId)
+    {
         $pdo = getPDO();
         $picture = Picture::read($pictureId);
         $filePath = $picture->getFilePath();
+        $thumbnailPath = $picture->getThumbnailPath();
+        $stmt = $pdo->prepare("DELETE FROM comment WHERE Picture_Id = ?");
+        $stmt->execute([$pictureId]);
         $stmt = $pdo->prepare("DELETE FROM picture WHERE Picture_Id = ?");
         $stmt->execute([$pictureId]);
 
         if ($stmt->rowCount() === 0) {
-            throw new Exception("Error deleting picture: " . $stmt->errorInfo());
+            throw new Exception("Error deleting picture: ");
         }
 
         if (file_exists($filePath)) {
@@ -293,5 +389,34 @@ class Picture {
                 throw new Exception("Error deleting picture file from the file system.");
             }
         }
+        if (file_exists($thumbnailPath)) {
+            if (!unlink($thumbnailPath)) {
+                throw new Exception("Error deleting thumbnail file from the file system.");
+            }
+        }
+    }
+
+    public function addComment($authorId, $commentText)
+    {
+        $pdo = getPDO();
+        $stmt = $pdo->prepare("INSERT INTO Comment (Author_Id, Picture_Id, Comment_Text) VALUES (?, ?, ?)");
+        if (!$stmt->execute([$authorId, $this->pictureId, $commentText])) {
+            throw new Exception("Failed to add comment.");
+        }
+    }
+
+    public function fetchComments()
+    {
+        $pdo = getPDO();
+        $stmt = $pdo->prepare("
+        SELECT c.Comment_Id, c.Author_Id, c.Comment_Text, u.Name
+        FROM Comment c
+        JOIN User u ON c.Author_Id = u.UserId
+        WHERE c.Picture_Id = ?
+        order by c.Comment_Id DESC
+    ");
+        $stmt->execute([$this->pictureId]);
+        $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $comments;
     }
 }

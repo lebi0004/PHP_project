@@ -1,0 +1,111 @@
+footer {
+    background-color: #004400;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    font-size: 0.9em;
+    margin-top: 40px;
+}
+
+a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #007BFF;
+}
+
+.animated-border {
+    padding: 5px;
+    text-align: center;
+    background: linear-gradient(90deg, red, blue, green, orange, red);
+    background-size: 400% 400%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: borderAnimation 5s linear infinite alternate, fadeInOut 5s ease-in-out infinite;
+}
+
+.disappearing-message {
+    overflow: hidden;
+    opacity: 1;
+    height: auto;
+    padding: 1rem 0;
+    margin-top: 1rem;
+    margin: 1rem 0;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes borderAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+.card {
+    margin-top: 40px;
+    padding: 30px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+h2.card-title strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.thumbnail-bar {
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+}
+
+.thumbnail-img.selected-thumbnail {
+    border-color: blue;
+}
+
+.main-image img {
+    max-height: 100vh;
+    width: auto; 
+    height: auto; 
+    object-fit: contain;
+    display: block;
+    margin-right: auto;
+}
+
+.thumbnail-img {
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: 2px solid transparent;
+    cursor: pointer;
+}
+
+.text-section {
+    padding-left: 15px;
+}
+
+.comment {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}

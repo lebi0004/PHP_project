@@ -19,6 +19,11 @@ $options = getAccessibilityOptions(); // Fetch accessibility options
 
 // Handle form submission to update accessibility
 $successMessage = '';
+if (isset($_SESSION['successMessage'])) {
+    $successMessage = $_SESSION['successMessage'];
+    unset($_SESSION['successMessage']);
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_changes'])) {
     try {
         foreach ($_POST['accessibility'] as $albumId => $newAccessibility) {
@@ -48,21 +53,6 @@ if (isset($_GET['delete_album'])) {
     $albums = getUserAlbums($user->getUserId());
 }
 ?>
-
-<script>
-    // Function to hide success message after a few seconds
-    function hideMessage() {
-        const messageElement = document.querySelector('.alert');
-        if (messageElement) {
-            setTimeout(() => {
-                messageElement.style.display = 'none';
-            }, 3000); // Hide after 3 seconds
-        }
-    }
-    document.addEventListener("DOMContentLoaded", function() {
-        hideMessage();
-    });
-</script>
 
 <div class="container mb-5 mt-4">
     <div class="shadow p-4 mb-5 bg-body-tertiary rounded" style="max-width: 800px; margin: auto;">
@@ -112,10 +102,7 @@ if (isset($_GET['delete_album'])) {
             </form>
         <?php }
         ?>
-
-
     </div>
 </div>
-
 
 <?php include('./common/footer.php'); ?>

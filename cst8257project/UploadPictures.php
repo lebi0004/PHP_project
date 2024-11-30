@@ -82,7 +82,7 @@ include("./common/header.php");
                 </div>
 
                 <?php if (!empty($successMessage)): ?>
-                    <div class="alert alert-success text-center mt-2" role="alert">
+                    <div class="alert alert-success text-center mt-2 disappearing-message" role="alert">
                         <?php echo $successMessage; ?>
                     </div>
                     <hr>
