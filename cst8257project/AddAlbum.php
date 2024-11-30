@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 $options = getAccessibilityOptions();
 ?>
 
-<div class="container mt-3">
-    <div class="shadow p-4 mb-5 bg-body-tertiary rounded" style="max-width: 600px; margin: auto;">
+<div class="container mb-5 mt-3">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: 60vw; margin: auto;">
         <h1 class="text-center mb-4 animated-border display-6">Create New Album</h1>
         <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
         <form action="AddAlbum.php" method="post">

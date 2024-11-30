@@ -83,82 +83,77 @@ $stmt->execute([$user->getUserId()]);
 $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Friends</title>
-</head>
-<body>
-<div class="container">
-    <h1 class="mb-2 animated-border display-6">My Friends</h1>
-    <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
+<div class="container mb-5 mt-3">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded">
+        <div class="card-body">
+            <h1 class="mb-2 animated-border display-6">My Friends</h1>
+            <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
 
-    <!-- Friends List -->
-    <form method="post">
-        <h4>Friends List</h4>
-        <?php if (!empty($friends)): ?>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Friend's Full Name</th>
-                        <th>Friend's User ID</th>
-                        <th>Shared Albums</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($friends as $friend): ?>
-                        <tr>
-                            <td><input type="checkbox" name="friends[]" value="<?= $friend['UserId'] ?>"></td>
-                            <td><?= htmlspecialchars($friend['FullName']) ?></td>
-                            <td>
-                                <a href="FriendPictures.php?friendId=<?= $friend['UserId'] ?>">
-                                    <?= htmlspecialchars($friend['UserId']) ?>
-                                </a>
-                            </td>
-                            <td><?= $friend['SharedAlbums'] ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <button type="submit" name="defriend" class="btn btn-danger" onclick="return confirm('Are you sure you want to defriend the selected friends?')">Defriend Selected</button>
-        <?php else: ?>
-            <p>You have no friends yet.</p>
-        <?php endif; ?>
-    </form>
+            <!-- Friends List -->
+            <form method="post">
+                <h4>Friends List</h4>
+                <?php if (!empty($friends)): ?>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Friend's Full Name</th>
+                                <th>Friend's User ID</th>
+                                <th>Shared Albums</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($friends as $friend): ?>
+                                <tr>
+                                    <td><input type="checkbox" name="friends[]" value="<?= $friend['UserId'] ?>"></td>
+                                    <td><?= htmlspecialchars($friend['FullName']) ?></td>
+                                    <td>
+                                        <a href="FriendPictures.php?friendId=<?= $friend['UserId'] ?>">
+                                            <?= htmlspecialchars($friend['UserId']) ?>
+                                        </a>
+                                    </td>
+                                    <td><?= $friend['SharedAlbums'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <button type="submit" name="defriend" class="btn btn-danger" onclick="return confirm('Are you sure you want to defriend the selected friends?')">Defriend Selected</button>
+                <?php else: ?>
+                    <p>You have no friends yet.</p>
+                <?php endif; ?>
+            </form>
 
-    <!-- Friend Requests -->
-    <h4>Friend Requests</h4>
-    <form method="post">
-        <?php if (!empty($friendRequests)): ?>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Select</th>
-                        <th>Requester Full Name</th>
-                        <th>Requester User ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($friendRequests as $request): ?>
-                        <tr>
-                            <td><input type="checkbox" name="friend_requests[]" value="<?= $request['UserId'] ?>"></td>
-                            <td><?= htmlspecialchars($request['FullName']) ?></td>
-                            <td><?= htmlspecialchars($request['UserId']) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <button type="submit" name="accept" class="btn btn-success">Accept Selected</button>
-            <button type="submit" name="decline" class="btn btn-warning" onclick="return confirm('Are you sure you want to decline the selected friend requests?')">Decline Selected</button>
-        <?php else: ?>
-            <p>No pending friend requests.</p>
-        <?php endif; ?>
-    </form>
+            <!-- Friend Requests -->
+            <h4>Friend Requests</h4>
+            <form method="post">
+                <?php if (!empty($friendRequests)): ?>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Select</th>
+                                <th>Requester Full Name</th>
+                                <th>Requester User ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($friendRequests as $request): ?>
+                                <tr>
+                                    <td><input type="checkbox" name="friend_requests[]" value="<?= $request['UserId'] ?>"></td>
+                                    <td><?= htmlspecialchars($request['FullName']) ?></td>
+                                    <td><?= htmlspecialchars($request['UserId']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <button type="submit" name="accept" class="btn btn-success">Accept Selected</button>
+                    <button type="submit" name="decline" class="btn btn-warning" onclick="return confirm('Are you sure you want to decline the selected friend requests?')">Decline Selected</button>
+                <?php else: ?>
+                    <p>No pending friend requests.</p>
+                <?php endif; ?>
+            </form>
 
-    <a href="AddFriend.php" class="btn btn-primary">Add Friends</a>
+            <a href="AddFriend.php" class="btn btn-primary">Add Friends</a>
+        </div>
+    </div>
 </div>
 <?php include('./common/footer.php'); ?>
-</body>
-</html>

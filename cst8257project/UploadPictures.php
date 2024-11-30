@@ -64,13 +64,10 @@ $albums = $user->fetchAllAlbums();
 
 include("./common/header.php");
 ?>
-
 <div class="container mb-5 mt-3">
-    <div class="card border-light">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: 60vw; margin: auto;">
         <div class="card-body">
-            <h1 class="card-title text-center text-dark mb-3 display-6 animated-border">
-                Upload Pictures
-            </h1>
+            <h1 class="card-title text-center text-dark mb-3 display-6 animated-border">Upload Pictures</h1>
             <div class="container">
             <?php if (count($albums) > 0): ?>
                 <div class="text-start">
@@ -92,28 +89,24 @@ include("./common/header.php");
                     </div>
                     <hr>
                 <?php endif; ?>
-            
                     <form class="my-3" action="UploadPictures.php" method="post" enctype="multipart/form-data">
                         <div class="form-group mb-3">
-                            <label for="albumId">Upload to Album</label>
                             <select class="form-control" name="albumId" id="albumId">
-                                <option value="" disabled selected>-- Select an Album --</option>
+                                <option value="" disabled selected>... Select an Album ...</option>
                                 <?php foreach ($albums as $album): ?>
                                     <option value="<?= $album->getAlbumId(); ?>"><?= $album->getTitle(); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="form-group mb-3">
-                            <label for="txtUpload">Image(s) to Upload</label>
+                        <div class="form-group mb-3 ps-1">
+                            <label for="txtUpload">Image(s) to Upload:</label>
                             <input type="file" class="form-control-file" name="txtUpload[]" id="txtUpload" multiple accept=".jpg,.jpeg,.gif,.png" />
                         </div>
                         <div class="form-group mb-3">
-                            <label for="txtTitle">Title</label>
-                            <input type="text" class="form-control" name="txtTitle" id="txtTitle" />
+                            <input type="text" class="form-control" name="txtTitle" id="txtTitle" placeholder="Album Title ..."/>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="txtDescription">Description</label>
-                            <textarea class="form-control" name="txtDescription" id="txtDescription"></textarea>
+                            <textarea class="form-control" name="txtDescription" id="txtDescription" placeholder="Album Description ..."></textarea>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary" name="btnUpload">Submit</button>
@@ -121,7 +114,7 @@ include("./common/header.php");
                         </div>
                     </form>
                 <?php else: ?>
-                    <div class="fs-5 text-center mt-3" role="alert">
+                    <div class="fs-5 text-center my-5" role="alert">
                         You do not have any albums. Please <a href="AddAlbum.php">create an album</a> first.
                     </div>
                 <?php endif; ?>

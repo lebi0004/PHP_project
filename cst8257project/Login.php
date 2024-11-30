@@ -35,38 +35,42 @@ if (isset($btnLogin)) {
     }
 }
 ?>
-<div class="container mt-2">
-    <form action='Login.php' method='post' class="mx-auto" style="max-width: 400px;">
-        <h1 class="text-center display-6 animated-border">Login</h1>
-        <p class="text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
+<section class="container text-start mb-5 mt-3">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form action='Login.php' method='post' class="p-4 border bg bg-light rounded shadow" style="max-width: 600px;">
+                <h1 class="text-center display-6 animated-border">Login</h1>
+                <p class="text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
 
-        <div class="mb-3">
-            <div class="text-danger">
-                <?php echo $loginErrorMsg; ?>
-            </div>
-        </div>
+                <div class="mb-3">
+                    <div class="text-danger">
+                        <?php echo $loginErrorMsg; ?>
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <label for="studentId" class="col-sm-4 col-form-label text-end">User ID:</label>
-            <div class="col-sm-6">
-                <input type='text' class="form-control" id="studentId" name='txtId' value="<?php echo isset($txtId) ? $txtId : ''; ?>">
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <label for="studentId" class="col-sm-4 col-form-label text-end">User ID:</label>
+                    <div class="col-sm-6">
+                        <input type='text' class="form-control" id="studentId" name='txtId' value="<?php echo isset($txtId) ? $txtId : ''; ?>">
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <label for="password" class="col-sm-4 col-form-label text-end">Password:</label>
-            <div class="col-sm-6">
-                <input type='password' class="form-control" id="password" name='txtPswd'>
-            </div>
-        </div>
+                <div class="row mb-3">
+                    <label for="password" class="col-sm-4 col-form-label text-end">Password:</label>
+                    <div class="col-sm-6">
+                        <input type='password' class="form-control" id="password" name='txtPswd'>
+                    </div>
+                </div>
 
-        <div class="row mb-3">
-            <div class="col-sm-6 offset-sm-4">
-                <button type="submit" name='btnLogin' class="btn btn-primary">Login</button>
-                <button type="reset" class="btn btn-secondary">Clear</button>
-            </div>
+                <div class="row mb-3">
+                    <div class="col-sm-6 offset-sm-4">
+                        <button type="submit" name='btnLogin' class="btn btn-primary">Login</button>
+                        <button type="reset" class="btn btn-secondary">Clear</button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </form>
-</div>
+    </div>
+</section>
 
 <?php include('./common/footer.php'); ?>

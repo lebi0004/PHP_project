@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment'])) {
 
 require_once("./common/header.php");
 ?>
-<h1 class="card-title text-center text-dark mb-3 display-6 animated-border">
+<h1 class="card-title text-center text-dark my-3 display-6 animated-border">
     My Pictures
 </h1>
 <div class="container mt-5">
