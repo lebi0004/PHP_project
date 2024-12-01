@@ -153,18 +153,20 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <button type="submit" name="defriend" class="btn btn-outline-danger" onclick="return confirmDefriend();">
-                                Defriend Selected
-                            </button>
+                            <div class="text-start mt-3">
+                                <button type="submit" name="defriend" class="btn btn-outline-danger me-2" onclick="return confirmDefriend();" style="width:190px;">
+                                    Defriend Selected
+                                </button>
+                                <a href="AddFriend.php" class="btn btn-outline-primary" style="width:190px;">
+                                    <i class="bi bi-person-plus-fill"></i> Add Friends
+                                </a>
+                            </div>
                         <?php else: ?>
-                            <p class="text-muted lead mb-5">You have no friends yet.</p>
+                            <p class="text-muted lead mb-5">You have no friends yet.
+                                <a href="AddFriend.php"><i class="bi bi-person-plus-fill"></i> Click here to add friends.</a>
+                            </p>
                         <?php endif; ?>
                     </form>
-                    <div class="text-start mt-3">
-                        <a href="AddFriend.php" class="btn btn-outline-primary">
-                            <i class="bi bi-person-plus-fill"></i> Add Friends
-                        </a>
-                    </div>
                 </div>
             </div>
 

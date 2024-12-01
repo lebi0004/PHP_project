@@ -185,7 +185,7 @@ require_once("./common/header.php");
             <div class="alert alert-info ms-4">No pictures in this album.</div>
         <?php endif; ?>
     <?php else: ?>
-        <div class="alert alert-info ms-4"><?= count($friendAlbums) < 1 ? "This friend has no shared albums." : "Please select an album to view pictures." ?></div>
+        <p class="lead fs-5 text-center ms-4 mt-4"><?= count($friendAlbums) < 1 ? "This friend has no shared albums." : "Please select an album to view pictures." ?></p>
     <?php endif; ?>
 </div>
 <?php require_once("./common/footer.php"); ?>
