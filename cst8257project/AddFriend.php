@@ -14,7 +14,8 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof User)) {
 }
 
 // Function to ensure the FriendshipStatus table is initialized
-function initializeFriendshipStatus($pdo) {
+function initializeFriendshipStatus($pdo)
+{
     $statuses = [
         ['pending', 'Friend request pending'],
         ['accepted', 'Friend request accepted']
@@ -97,20 +98,19 @@ try {
 include("./common/header.php");
 ?>
 
-<div class="container mt-5">
-    <div class="shadow-lg p-4 bg-body-tertiary rounded">
-        <!-- Page Title -->
+<div class="container mb-5 mt-3">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: 60vw; margin: auto;">
         <h1 class="mb-4 text-center display-6 text-primary animated-border">Add Friends</h1>
-        <p class="text-center">
-            Welcome <b><?= htmlspecialchars($user->getName()); ?></b>! 
+        <p class="text-center lead">
+            Welcome <b><?= htmlspecialchars($user->getName()); ?></b>!
             (Not you? <a href="Login.php">Change user here</a>)
         </p>
 
         <!-- Error Messages -->
         <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger">
+            <div class="alert alert-danger text-center mt-2" role="alert">
                 <?php foreach ($errors as $error): ?>
-                    <p><?= htmlspecialchars($error) ?></p>
+                    <?= htmlspecialchars($error) ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -119,7 +119,7 @@ include("./common/header.php");
         <?php if (!empty($successes)): ?>
             <div class="alert alert-success">
                 <?php foreach ($successes as $success): ?>
-                    <p><?= htmlspecialchars($success) ?></p>
+                    <?= htmlspecialchars($success) ?>
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
@@ -127,12 +127,12 @@ include("./common/header.php");
         <!-- Form -->
         <form method="post" class="mt-4">
             <div class="mb-3">
-                <label for="friendId" class="form-label">Enter the User ID of the friend you want to add:</label>
-                <input type="text" name="friendId" id="friendId" class="form-control form-control-lg" placeholder="User ID" required>
+                <label for="friendId" class="form-label lead">Enter the User ID of the friend you want to add:</label>
+                <input type="text" name="friendId" id="friendId" class="form-control form-control-md" placeholder="User ID ..." required>
             </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-person-plus"></i> Send Friend Request
+            <div class="text-center mb-3">
+                <button type="submit" class="btn btn-primary btn-md">
+                Send Friend Request
                 </button>
             </div>
         </form>

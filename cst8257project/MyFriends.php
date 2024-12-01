@@ -114,28 +114,28 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded">
         <div class="card-body">
             <h1 class="mb-2 animated-border display-6 text-center">My Friends</h1>
-            <p class="text-center">
-                Welcome <b><?= htmlspecialchars($user->getName()); ?></b>! 
+            <p class="text-center lead">
+                Welcome <b><?= htmlspecialchars($user->getName()); ?></b>!
                 (Not you? <a href="Login.php">change user here</a>)
             </p>
 
             <!-- Friends List -->
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-primary bg-gradient text-white">
                     <h4>Friends List</h4>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         <?php if (!empty($friends)): ?>
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead class="table-dark">
+                            <table class="table table-bordered table-striped table-hover mt-3 mb-4">
+                                <thead class="bg-gradient text-center">
                                     <tr>
-                                        <th>Friend's Full Name</th>
+                                        <th>Friend's Name</th>
                                         <th>Shared Albums <i class="bi bi-images"></i></th>
                                         <th>Select</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="bg-gradient text-center">
                                     <?php foreach ($friends as $friend): ?>
                                         <tr>
                                             <td>
@@ -153,32 +153,37 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <button type="submit" name="defriend" class="btn btn-danger" onclick="return confirmDefriend();">
+                            <button type="submit" name="defriend" class="btn btn-outline-danger" onclick="return confirmDefriend();">
                                 Defriend Selected
                             </button>
                         <?php else: ?>
-                            <p class="text-muted">You have no friends yet.</p>
+                            <p class="text-muted lead mb-5">You have no friends yet.</p>
                         <?php endif; ?>
                     </form>
+                    <div class="text-start mt-3">
+                        <a href="AddFriend.php" class="btn btn-outline-primary">
+                            <i class="bi bi-person-plus-fill"></i> Add Friends
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <!-- Friend Requests -->
             <div class="card mb-4">
-                <div class="card-header bg-warning text-white">
+                <div class="card-header bg-primary bg-gradient text-white">
                     <h4>Friend Requests</h4>
                 </div>
                 <div class="card-body">
                     <form method="post">
                         <?php if (!empty($friendRequests)): ?>
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead class="table-dark">
+                            <table class="table table-bordered table-striped table-hover mt-3 mb-4" style="max-width: 80vw;">
+                                <thead class="bg-gradient text-center">
                                     <tr>
-                                        <th>Requester Full Name</th>
+                                        <th>Name</th>
                                         <th>Select</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="text-center">
                                     <?php foreach ($friendRequests as $request): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($request['FullName']) ?></td>
@@ -189,24 +194,17 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <button type="submit" name="accept" class="btn btn-success">
+                            <button type="submit" name="accept" class="btn btn-outline-success">
                                 Accept Selected
                             </button>
-                            <button type="submit" name="decline" class="btn btn-danger" onclick="return confirmDecline();">
+                            <button type="submit" name="decline" class="btn btn-outline-danger" onclick="return confirmDecline();">
                                 Decline Selected
                             </button>
                         <?php else: ?>
-                            <p class="text-muted">No pending friend requests.</p>
+                            <p class="text-muted lead">No pending friend requests.</p>
                         <?php endif; ?>
                     </form>
                 </div>
-            </div>
-
-            <!-- Add Friends Link -->
-            <div class="text-center mt-3">
-                <a href="AddFriend.php" class="btn btn-primary">
-                    <i class="bi bi-person-plus-fill"></i> Add Friends
-                </a>
             </div>
         </div>
     </div>

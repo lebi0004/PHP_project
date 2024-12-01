@@ -3,7 +3,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include("./common/header.php");
+include_once("./common/header.php");
 include_once "Functions.php";
 include_once "EntityClassLib.php";
 // session_start();
@@ -25,6 +25,15 @@ if (isset($regSubmit)) {
     // Validate fields
     if (empty($txtId)) {
         $errors['txtId'] = "Student ID is required.";
+    } else {
+        try {
+            $existingUser = getUserById($txtId);
+            if ($existingUser) {
+                $errors['txtId'] = "A user with this ID has already signed up.";
+            }
+        } catch (Exception $e) {
+            die("The system is currently not available, try again later.");
+        }
     }
 
     if (empty($txtName)) {
@@ -46,18 +55,6 @@ if (isset($regSubmit)) {
 
     if ($txtPassword !== $txtPasswordConfirm) {
         $errors['txtPasswordConfirm'] = "Passwords do not match.";
-    }
-
-    // Check if Student ID already exists
-    if (empty($errors)) {
-        try {
-            $existingUser = getUserById($txtId);
-            if ($existingUser) {
-                $errors['txtId'] = "A user with this ID has already signed up.";
-            }
-        } catch (Exception $e) {
-            die("The system is currently not available, try again later.");
-        }
     }
 
     // If no errors, proceed with registration
@@ -82,7 +79,7 @@ if (isset($regSubmit)) {
             <form action="NewUser.php" method="post" class="p-4 border bg bg-light rounded shadow">
                 <div class="text-center">
                     <h1 class="display-4 animated-border">Sign up</h1>
-                    <p class="display-7">All fields are required</p>
+                    <p class="lead">All fields are required</p>
                 </div>
 
                 <div class="row mb-3">

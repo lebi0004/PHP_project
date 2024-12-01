@@ -109,19 +109,23 @@ require_once("./common/header.php");
     Your friend <?= htmlspecialchars($friend->getName()) ?>'s Shared Pictures
 </h1>
 <div class="container mt-5">
-    <form method="GET" action="FriendPictures.php">
-        <input type="hidden" name="friendId" value="<?= htmlspecialchars($friendId); ?>">
-        <div class="mb-3 w-50 ms-4">
-            <select class="form-select" id="albumSelect" name="album_id" onchange="this.form.submit()">
-                <option value="">-- Select Album --</option>
-                <?php foreach ($friendAlbums as $album): ?>
-                    <option value="<?= $album->getAlbumId(); ?>" <?= ($selectedAlbumId == $album->getAlbumId()) ? 'selected' : ''; ?>>
-                        <?= htmlspecialchars($album->getTitle()); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+    <div class="row mx-3">
+        <div class="col-md-8">
+            <form method="GET" action="FriendPictures.php">
+                <input type="hidden" name="friendId" value="<?= htmlspecialchars($friendId); ?>">
+                <div class="mb-3">
+                    <select class="form-select" id="albumSelect" name="album_id" onchange="this.form.submit()">
+                        <option value="">-- Select Album --</option>
+                        <?php foreach ($friendAlbums as $album): ?>
+                            <option value="<?= $album->getAlbumId(); ?>" <?= ($selectedAlbumId == $album->getAlbumId()) ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($album->getTitle()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
     <?php if ($errorMessage): ?>
         <div class="alert alert-danger disappearing-message ms-4">
             <?= htmlspecialchars($errorMessage); ?>

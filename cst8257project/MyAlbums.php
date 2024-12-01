@@ -46,8 +46,8 @@ if (isset($_GET['delete_album'])) {
     $albumId = $_GET['delete_album'];
     try {
         Album::delete($albumId);
-        $_SESSION['successMessage'] = "Album deleted successfully!";
         header("Location: MyAlbums.php");
+        $_SESSION['successMessage'] = "Album deleted successfully!";
         exit();
     } catch (Exception $e) {
         echo "<div class='alert alert-danger'>Error: " . $e->getMessage() . "</div>";
@@ -56,17 +56,17 @@ if (isset($_GET['delete_album'])) {
 }
 ?>
 <div class="container mb-5 mt-3">
-    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: vw; margin: auto;">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="min-height: 380px; margin: auto;">
         <h1 class="mb-2 animated-border display-6">My Albums</h1>
-        <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
+        <p class="text-center lead">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
         <!-- Success message -->
         <?php if (!empty($successMessage)): ?>
             <div id="successMessage" class="alert alert-success disappearing-message"><?php echo $successMessage; ?></div>
         <?php endif;
         if (empty($albums)) { ?>
-            <p class="fs-5 my-5 text-center">You do not have any albums. <a href="AddAlbum.php">Create a New Album</a></p>
+            <p class="fs-5 my-5 text-center lead">You do not have any albums. <a href="AddAlbum.php">Create a New Album</a></p>
         <?php } else { ?>
-            <form method="post" action="MyAlbums.php">
+            <form method="post" action="MyAlbums.php" style="max-width: 80vw;" class="ms-3">
                 <div class="table-responsive">
                     <table class="table table-bordered table-striped mb-5">
                         <thead>
@@ -93,7 +93,7 @@ if (isset($_GET['delete_album'])) {
                                         </select>
                                     </td>
                                     <td>
-                                        <a href="MyAlbums.php?delete_album=<?php echo $album['Album_Id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this album?');">Delete</a>
+                                        <a href="MyAlbums.php?delete_album=<?php echo $album['Album_Id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this album? All pictures in the album will be deleted.');">Delete</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

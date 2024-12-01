@@ -20,7 +20,8 @@ $album = $albumId ? Album::read($albumId) : null;
 $txtTitle = $_POST['txtTitle'] ?? '';
 $txtDescription = $_POST['txtDescription'] ?? '';
 
-$successMessage = '';
+$successMessage = $_SESSION['successMessage']?? '';
+unset($_SESSION['successMessage']);
 $errorMessage = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btnUpload'])) {
     if (isset($_FILES['txtUpload']) && $albumId) {
@@ -58,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btnUpload'])) {
             }
         }
         if (!empty($uploadedFiles)) {
-            $successMessage = "Successfully uploaded " . count($uploadedFiles) . " image(s) to the album '" . $album->getTitle() . "'.";
+            $_SESSION['successMessage'] = "Successfully uploaded " . count($uploadedFiles) . " image(s) to the album '" . $album->getTitle() . "'.";
+            header("Location: UploadPictures.php");
+            exit();
         }
     } elseif (!$albumId) {
         $errorMessage = "Please select an album to upload the pictures.";
@@ -83,17 +86,15 @@ include("./common/header.php");
                             </ul>
                         </small>
                     </div>
-
+                    <hr>
                     <?php if (!empty($successMessage)): ?>
                         <div class="alert alert-success text-center mt-2 disappearing-message" role="alert">
                             <?php echo $successMessage; ?>
                         </div>
-                        <hr>
                     <?php elseif (!empty($errorMessage)): ?>
                         <div class="alert alert-danger text-center mt-2" role="alert">
                             <?php echo $errorMessage; ?>
                         </div>
-                        <hr>
                     <?php endif; ?>
                     <form class="my-3" action="UploadPictures.php" method="post" enctype="multipart/form-data">
                         <div class="form-group mb-3">
@@ -112,9 +113,9 @@ include("./common/header.php");
                             <input type="text" class="form-control" name="txtTitle" id="txtTitle" placeholder="Add a Title ..." />
                         </div>
                         <div class="form-group mb-3">
-                            <textarea class="form-control" name="txtDescription" id="txtDescription" placeholder="Add a Description ..."></textarea>
+                            <textarea class="form-control" name="txtDescription" id="txtDescription" placeholder="Add a Description ..." rows="4"></textarea>
                         </div>
-                        <div class="form-group">
+                        <div class="d-flex justify-content-between">
                             <button type="submit" class="btn btn-primary" name="btnUpload">Submit</button>
                             <button type="reset" class="btn btn-secondary">Clear</button>
                         </div>

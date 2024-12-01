@@ -1,9 +1,9 @@
 
     </div>  
   </div>  
-<footer style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color: darkgreen;">
+<footer style="position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background-color:#004d4d;">
   <div class="container">
-    <p style="text-align: center; padding: 10px; color: white;">&copy; Algonquin College 2010 - <?php date_default_timezone_set("America/Toronto"); print Date("Y"); ?>
+    <p style="text-align: center; padding: 10px; color: #e6e6e6;">&copy; Algonquin College 2010 - <?php date_default_timezone_set("America/Toronto"); print Date("Y"); ?>
       . All Rights Reserved
     </p>
   </div>

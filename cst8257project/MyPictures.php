@@ -81,18 +81,22 @@ require_once("./common/header.php");
     My Pictures
 </h1>
 <div class="container mt-5">
-    <form method="GET" action="MyPictures.php">
-        <div class="mb-3 w-50 ms-4">
-            <select class="form-select" id="albumSelect" name="album_id" onchange="this.form.submit()">
-                <option value="">-- Select Album --</option>
-                <?php foreach ($userAlbums as $album): ?>
-                    <option value="<?= $album->getAlbumId(); ?>" <?= ($selectedAlbumId == $album->getAlbumId()) ? 'selected' : ''; ?>>
-                        <?= htmlspecialchars($album->getTitle()); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+    <div class="row mx-3">
+        <div class="col-md-8">
+            <form method="GET" action="MyPictures.php">
+                <div class="mb-3">
+                    <select class="form-select" id="albumSelect" name="album_id" onchange="this.form.submit()">
+                        <option value="">-- Select Album --</option>
+                        <?php foreach ($userAlbums as $album): ?>
+                            <option value="<?= $album->getAlbumId(); ?>" <?= ($selectedAlbumId == $album->getAlbumId()) ? 'selected' : ''; ?>>
+                                <?= htmlspecialchars($album->getTitle()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
     <?php if ($errorMessage): ?>
         <div class="alert alert-danger disappearing-message ms-4">
             <?= htmlspecialchars($errorMessage); ?>
@@ -107,13 +111,13 @@ require_once("./common/header.php");
                             <div class="main-image mb-3">
                                 <img src="<?= htmlspecialchars($selectedPicture->getFilePath()); ?>" class="img-fluid">
                             </div>
-                        </div>
-                        <div class="thumbnail-bar d-flex overflow-auto mb-3">
-                            <?php foreach ($pictures as $picture): ?>
-                                <a href="MyPictures.php?album_id=<?= $selectedAlbumId; ?>&picture_id=<?= $picture->getPictureId(); ?>" class="me-1">
-                                    <img src="<?= htmlspecialchars($picture->getThumbnailPath()); ?>" alt="Thumbnail" class="thumbnail-img img-fluid <?= ($picture->getPictureId() == $selectedPictureId) ? 'selected-thumbnail' : ''; ?>">
-                                </a>
-                            <?php endforeach; ?>
+                            <div class="thumbnail-bar mb-3">
+                                <?php foreach ($pictures as $picture): ?>
+                                    <a href="MyPictures.php?album_id=<?= $selectedAlbumId; ?>&picture_id=<?= $picture->getPictureId(); ?>" class="me-1">
+                                        <img src="<?= htmlspecialchars($picture->getThumbnailPath()); ?>" alt="Thumbnail" class="thumbnail-img <?= ($picture->getPictureId() == $selectedPictureId) ? 'selected-thumbnail' : ''; ?>">
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4 mb-5">
@@ -152,7 +156,7 @@ require_once("./common/header.php");
             <div class="alert alert-info ms-4">No pictures in this album.</div>
         <?php endif; ?>
     <?php else: ?>
-        <div class="alert alert-info ms-4"><?= count($userAlbums) < 1 ? "You have no albums." : "Please select an album to view pictures." ?></div>
+        <p class="lead fs-5 text-center ms-4 mt-4"><?= count($userAlbums) < 1 ? "You have no albums." : "Please select an album to view pictures." ?></p>
     <?php endif; ?>
 </div>
 <?php require_once("./common/footer.php"); ?>

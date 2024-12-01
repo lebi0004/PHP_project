@@ -40,7 +40,7 @@ if (isset($btnLogin)) {
         <div class="col-12 col-md-8 col-lg-6">
             <form action='Login.php' method='post' class="p-4 border bg bg-light rounded shadow" style="max-width: 600px;">
                 <h1 class="text-center display-6 animated-border">Login</h1>
-                <p class="text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
+                <p class="lead text-center">You need to <a href='NewUser.php'>sign up</a> if you are a new user.</p>
 
                 <div class="mb-3">
                     <div class="text-danger">
