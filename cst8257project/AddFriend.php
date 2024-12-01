@@ -51,25 +51,42 @@ try {
         } elseif ($friendId === $user->getUserId()) {
             $errors[] = 'You cannot send a friend request to yourself.';
         } else {
-            // Check if the user exists
-            $stmt = $pdo->prepare('SELECT COUNT(*) FROM User WHERE UserId = ?');
+            // Fetch the friend's name
+            $stmt = $pdo->prepare('SELECT Name FROM User WHERE UserId = ?');
             $stmt->execute([$friendId]);
-            if ($stmt->fetchColumn() === 0) {
-                $errors[] = 'The specified user does not exist.';
-            } else {
-                // Check for existing relationships
-                $stmt = $pdo->prepare('SELECT COUNT(*) FROM Friendship WHERE 
-                    (Friend_RequesterId = ? AND Friend_RequesteeId = ?) OR 
-                    (Friend_RequesterId = ? AND Friend_RequesteeId = ?)');
-                $stmt->execute([$user->getUserId(), $friendId, $friendId, $user->getUserId()]);
+            $friendName = $stmt->fetchColumn();
+
+            if ($friendName) {
+                // Check for a pending request from B to A
+                $stmt = $pdo->prepare('SELECT COUNT(*) FROM Friendship WHERE Friend_RequesterId = ? AND Friend_RequesteeId = ? AND Status = ?');
+                $stmt->execute([$friendId, $user->getUserId(), 'pending']);
                 if ($stmt->fetchColumn() > 0) {
-                    $errors[] = 'You are already friends or have a pending request with this user.';
-                } else {
-                    // Send a friend request
+                    // Accept the pending friend request from B to A
+                    $stmt = $pdo->prepare('UPDATE Friendship SET Status = ? WHERE Friend_RequesterId = ? AND Friend_RequesteeId = ?');
+                    $stmt->execute(['accepted', $friendId, $user->getUserId()]);
+
+                    // Also insert the reverse friendship to maintain bidirectional relationship
                     $stmt = $pdo->prepare('INSERT INTO Friendship (Friend_RequesterId, Friend_RequesteeId, Status) VALUES (?, ?, ?)');
-                    $stmt->execute([$user->getUserId(), $friendId, 'pending']);
-                    $successes[] = "Friend request sent to $friendId.";
+                    $stmt->execute([$user->getUserId(), $friendId, 'accepted']);
+
+                    $successes[] = "You and $friendName (ID: $friendId) are now friends.";
+                } else {
+                    // Check for existing relationships
+                    $stmt = $pdo->prepare('SELECT COUNT(*) FROM Friendship WHERE 
+                        (Friend_RequesterId = ? AND Friend_RequesteeId = ?) OR 
+                        (Friend_RequesterId = ? AND Friend_RequesteeId = ?)');
+                    $stmt->execute([$user->getUserId(), $friendId, $friendId, $user->getUserId()]);
+                    if ($stmt->fetchColumn() > 0) {
+                        $errors[] = "You and $friendName (ID: $friendId) are already friends.";
+                    } else {
+                        // Send a friend request
+                        $stmt = $pdo->prepare('INSERT INTO Friendship (Friend_RequesterId, Friend_RequesteeId, Status) VALUES (?, ?, ?)');
+                        $stmt->execute([$user->getUserId(), $friendId, 'pending']);
+                        $successes[] = "Your request has been sent to $friendName (ID: $friendId). Once $friendName accepts your friend request, you will be able to view each other's shared albums.";
+                    }
                 }
+            } else {
+                $errors[] = 'The specified user does not exist.';
             }
         }
     }
@@ -80,50 +97,46 @@ try {
 include("./common/header.php");
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <h1 class="mb-2 animated-border display-6">Add Friends</h1>
-        <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
-    <style>
-        .alert {
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
 <div class="container mt-5">
-    <h3>Add Friend</h3>
+    <div class="shadow-lg p-4 bg-body-tertiary rounded">
+        <!-- Page Title -->
+        <h1 class="mb-4 text-center display-6 text-primary animated-border">Add Friends</h1>
+        <p class="text-center">
+            Welcome <b><?= htmlspecialchars($user->getName()); ?></b>! 
+            (Not you? <a href="Login.php">Change user here</a>)
+        </p>
 
-    <!-- Error Messages -->
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <?php foreach ($errors as $error): ?>
-                <p><?= htmlspecialchars($error) ?></p>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+        <!-- Error Messages -->
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger">
+                <?php foreach ($errors as $error): ?>
+                    <p><?= htmlspecialchars($error) ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
-    <!-- Success Messages -->
-    <?php if (!empty($successes)): ?>
-        <div class="alert alert-success">
-            <?php foreach ($successes as $success): ?>
-                <p><?= htmlspecialchars($success) ?></p>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
+        <!-- Success Messages -->
+        <?php if (!empty($successes)): ?>
+            <div class="alert alert-success">
+                <?php foreach ($successes as $success): ?>
+                    <p><?= htmlspecialchars($success) ?></p>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
 
-    <!-- Form -->
-    <form method="post">
-        <div class="form-group">
-            <label for="friendId">Enter the User ID of the friend you want to add:</label>
-            <input type="text" name="friendId" id="friendId" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Send Friend Request</button>
-    </form>
+        <!-- Form -->
+        <form method="post" class="mt-4">
+            <div class="mb-3">
+                <label for="friendId" class="form-label">Enter the User ID of the friend you want to add:</label>
+                <input type="text" name="friendId" id="friendId" class="form-control form-control-lg" placeholder="User ID" required>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-person-plus"></i> Send Friend Request
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <?php include('./common/footer.php'); ?>
-</body>
-</html>
