@@ -12,13 +12,29 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof User)) {
     exit();
 }
 
-// Get the logged-in user
+
 $user = $_SESSION['user'];
 
 include("./common/header.php");
 
+$friends = $user->fetchAllFriends();
 
-
+foreach ($friends as $friend) {
+    $friendAlbums = $friend->fetchAllAlbums($accessibilityCode = 'shared' );
+    echo "<h1>{$friend->getName()}'s Albums</h1>";
+    foreach ($friendAlbums as $album) {
+        $album->fetchAllPictures();
+        echo "<h2>{$album->getTitle()}</h2>";
+        echo "<div class='row'>";
+        foreach ($album->fetchAllPictures() as $picture) {
+            echo "<div class='col-md-3'>";
+            echo "<img src='{$picture->getFilePath()}' class='img-thumbnail' alt='{$picture->getTitle()}'>";
+            echo "<p>{$picture->getTitle()}</p>";
+            echo "</div>";
+        }
+        echo "</div>";
+    }
+}
 
 
 

@@ -41,21 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // If no errors, insert the album into the database
     if (empty($errors)) {
         try {
-            $pdo = getPDO();
-            $sql = "INSERT INTO Album (Title, Description, Accessibility_Code, Owner_Id) 
-                    VALUES (:title, :description, :accessibility, :owner_id)";
-            $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                'title' => $title,
-                'description' => $description,
-                'accessibility' => $accessibility,
-                'owner_id' => $user->getUserId()
-            ]);
+            $album = new Album($title, $description,$accessibility, $user->getUserId());
+            $album->create();
             $_SESSION['successMessage'] = "Album added successfully!";
             header("Location: MyAlbums.php");
             exit();
         } catch (Exception $e) {
-            echo "<div class='alert alert-danger'>Error: " . $e->getMessage() . "</div>";
+            echo "<div class='alert alert-danger disappearing-message'>Error: " . $e->getMessage() . " Please try again." . "</div>";
         }
     }
 }

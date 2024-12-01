@@ -46,7 +46,9 @@ if (isset($_GET['delete_album'])) {
     $albumId = $_GET['delete_album'];
     try {
         Album::delete($albumId);
-        $successMessage = "Album deleted successfully!";
+        $_SESSION['successMessage'] = "Album deleted successfully!";
+        header("Location: MyAlbums.php");
+        exit();
     } catch (Exception $e) {
         echo "<div class='alert alert-danger'>Error: " . $e->getMessage() . "</div>";
     }

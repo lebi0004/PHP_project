@@ -41,10 +41,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['btnUpload'])) {
                     $errorMessage = "The file type of '{$originalName}' is not allowed. Please upload JPG, JPEG, GIF, or PNG files.<br>";
                     continue;
                 }
-                $picture = new Picture($originalName, $albumId, $txtTitle, $txtDescription);
-                $filePath = $picture->saveToUploadFolder($tmpFilePath, $albumId);
-                $picture->create();
-                $uploadedFiles[] = $originalName;
+                try {
+                    $picture = new Picture($originalName, $albumId, $txtTitle, $txtDescription);
+                    $filePath = $picture->saveToUploadFolder($tmpFilePath, $albumId);
+                    $picture->create();
+                    $uploadedFiles[] = $originalName;
+                } catch (Exception $e) {
+                    $errorMessage = "Error uploading file '{$originalName}': " . $e->getMessage() . "<br>";
+                }
             } elseif ($errorCode == 1) {
                 $errorMessage = "Error uploading file '{$originalName}': File is too large.<br>";
             } elseif ($errorCode == 4) {
@@ -69,26 +73,28 @@ include("./common/header.php");
         <div class="card-body">
             <h1 class="card-title text-center text-dark mb-3 display-6 animated-border">Upload Pictures</h1>
             <div class="container">
-            <?php if (count($albums) > 0): ?>
-                <div class="text-start">
-                    <small>
-                        Accepted image types: JPG, JPEG, GIF and PNG. <br>
-                        You can upload multiple pictures at a time by holding the shift key while selecting images. <br>
-                        When uploading multiple pictures, the title and description will apply to all pictures. <br>
-                    </small>
-                </div>
+                <?php if (count($albums) > 0): ?>
+                    <div class="text-start">
+                        <small>
+                            <ul>
+                                <li>Accepted image types: JPG, JPEG, GIF and PNG. </li>
+                                <li>You can upload multiple pictures at a time by holding the shift key while selecting images.</li>
+                                <li>When uploading multiple pictures, the title and description will apply to all pictures.</li>
+                            </ul>
+                        </small>
+                    </div>
 
-                <?php if (!empty($successMessage)): ?>
-                    <div class="alert alert-success text-center mt-2 disappearing-message" role="alert">
-                        <?php echo $successMessage; ?>
-                    </div>
-                    <hr>
-                <?php elseif (!empty($errorMessage)): ?>
-                    <div class="alert alert-danger text-center mt-2" role="alert">
-                        <?php echo $errorMessage; ?>
-                    </div>
-                    <hr>
-                <?php endif; ?>
+                    <?php if (!empty($successMessage)): ?>
+                        <div class="alert alert-success text-center mt-2 disappearing-message" role="alert">
+                            <?php echo $successMessage; ?>
+                        </div>
+                        <hr>
+                    <?php elseif (!empty($errorMessage)): ?>
+                        <div class="alert alert-danger text-center mt-2" role="alert">
+                            <?php echo $errorMessage; ?>
+                        </div>
+                        <hr>
+                    <?php endif; ?>
                     <form class="my-3" action="UploadPictures.php" method="post" enctype="multipart/form-data">
                         <div class="form-group mb-3">
                             <select class="form-control" name="albumId" id="albumId">
@@ -103,10 +109,10 @@ include("./common/header.php");
                             <input type="file" class="form-control-file" name="txtUpload[]" id="txtUpload" multiple accept=".jpg,.jpeg,.gif,.png" />
                         </div>
                         <div class="form-group mb-3">
-                            <input type="text" class="form-control" name="txtTitle" id="txtTitle" placeholder="Album Title ..."/>
+                            <input type="text" class="form-control" name="txtTitle" id="txtTitle" placeholder="Add a Title ..." />
                         </div>
                         <div class="form-group mb-3">
-                            <textarea class="form-control" name="txtDescription" id="txtDescription" placeholder="Album Description ..."></textarea>
+                            <textarea class="form-control" name="txtDescription" id="txtDescription" placeholder="Add a Description ..."></textarea>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary" name="btnUpload">Submit</button>

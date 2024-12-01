@@ -103,13 +103,15 @@ require_once("./common/header.php");
             <?php if ($selectedPicture): ?>
                 <div class="row mx-3">
                     <div class="col-md-8">
-                        <div class="main-image mb-3">
-                            <img src="<?= htmlspecialchars($selectedPicture->getFilePath()); ?>">
+                        <div class="image-container">
+                            <div class="main-image mb-3">
+                                <img src="<?= htmlspecialchars($selectedPicture->getFilePath()); ?>" class="img-fluid">
+                            </div>
                         </div>
                         <div class="thumbnail-bar d-flex overflow-auto mb-3">
                             <?php foreach ($pictures as $picture): ?>
-                                <a href="MyPictures.php?album_id=<?= $selectedAlbumId; ?>&picture_id=<?= $picture->getPictureId(); ?>" class="me-2">
-                                    <img src="<?= htmlspecialchars($picture->getThumbnailPath()); ?>" alt="Thumbnail" class="thumbnail-img <?= ($picture->getPictureId() == $selectedPictureId) ? 'selected-thumbnail' : ''; ?>">
+                                <a href="MyPictures.php?album_id=<?= $selectedAlbumId; ?>&picture_id=<?= $picture->getPictureId(); ?>" class="me-1">
+                                    <img src="<?= htmlspecialchars($picture->getThumbnailPath()); ?>" alt="Thumbnail" class="thumbnail-img img-fluid <?= ($picture->getPictureId() == $selectedPictureId) ? 'selected-thumbnail' : ''; ?>">
                                 </a>
                             <?php endforeach; ?>
                         </div>
@@ -117,7 +119,7 @@ require_once("./common/header.php");
                     <div class="col-md-4 mb-5">
                         <div class="text-section">
                             <h5 class="mt-0"><?= htmlspecialchars($selectedPicture->getTitle()); ?></h5>
-                            <p><?= nl2br(htmlspecialchars($selectedPicture->getDescription())); ?></p>
+                            <p><strong>Description: </strong><?= !empty(htmlspecialchars($selectedPicture->getDescription())) ? htmlspecialchars($selectedPicture->getDescription()) : "No description found."; ?></p>
                             <?php
                             $comments = $selectedPicture->fetchComments();
                             if (!empty($comments)): ?>
@@ -150,7 +152,7 @@ require_once("./common/header.php");
             <div class="alert alert-info ms-4">No pictures in this album.</div>
         <?php endif; ?>
     <?php else: ?>
-        <div class="alert alert-info ms-4"><?= count($userAlbums) < 1 ? "You have no albums." : "Please select an album to view pictures."?></div>
+        <div class="alert alert-info ms-4"><?= count($userAlbums) < 1 ? "You have no albums." : "Please select an album to view pictures." ?></div>
     <?php endif; ?>
 </div>
 <?php require_once("./common/footer.php"); ?>

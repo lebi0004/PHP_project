@@ -9,7 +9,7 @@ class User
     private $password; // Add this property to store the hashed password
 
     // Constructor to initialize the User object
-    public function __construct($userId, $name, $phone, $password)
+    public function __construct($userId, $name, $phone, $password = null)
     {
         $this->userId = $userId;
         $this->name = $name;
@@ -39,11 +39,17 @@ class User
         return $this->password;
     }
 
-    public function fetchAllAlbums()
+    public function fetchAllAlbums($accessibilityCode = null)
     {
         $pdo = getPDO();
-        $stmt = $pdo->prepare("SELECT * FROM album WHERE Owner_Id = ?");
-        $stmt->execute([$this->userId]);
+        $sql = "SELECT * FROM album WHERE Owner_Id = ?";
+        $params = [$this->userId];
+        if ($accessibilityCode) {
+            $sql .= " AND Accessibility_Code = ?";
+            $params[] = $accessibilityCode;
+        }
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $albums = [];
@@ -51,6 +57,28 @@ class User
             $albums[] = new Album($row['Title'], $row['Description'], $row['Accessibility_Code'], $row['Owner_Id'], $row['Album_Id']);
         }
         return $albums;
+    }
+
+    public function fetchAllFriends()
+    {
+        $pdo = getPDO();
+        $stmt = $pdo->prepare("SELECT * FROM user WHERE UserId IN
+                 (SELECT friendship.Friend_RequesteeId FROM friendship
+                    WHERE Friend_RequesterId = :userId AND Status = 'accepted'
+                 UNION
+                SELECT friendship.Friend_RequesterId FROM friendship
+                    WHERE Friend_RequesteeId = :userId AND Status = 'accepted');");
+        $stmt->execute(['userId'=>$this->userId]);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $friends = [];
+        foreach ($result as $row) {
+            if ($row['UserId'] === $this->userId) {
+                continue;
+            }
+            $friends[] = new User($row['UserId'], $row['Name'], $row['Phone']);
+        }
+        return $friends;
     }
 }
 
@@ -128,16 +156,16 @@ class Album
         $sql = "INSERT INTO Album (Title, Description, Accessibility_Code, Owner_Id) 
                 VALUES (:title, :description, :accessibility, :owner_id)";
         $stmt = $pdo->prepare($sql);
-        if ($stmt->execute([
-            'title' => $this->title,
-            'description' => $this->description,
-            'accessibility' => $this->accessibilityCode,
-            'owner_id' => $this->ownerId
-        ])) {
+        try {
+            $stmt->execute([
+                'title' => $this->title,
+                'description' => $this->description,
+                'accessibility' => $this->accessibilityCode,
+                'owner_id' => $this->ownerId
+            ]);
             $this->albumId = $pdo->lastInsertId();
-        } else {
-            $errorInfo = $stmt->errorInfo();
-            throw new Exception("Error creating album: " . $errorInfo[2]);
+        } catch (Exception $e) {
+            throw new Exception("Album creation failed.");
         }
     }
 
@@ -183,8 +211,10 @@ class Album
         $stmt = $pdo->prepare("DELETE FROM album WHERE Album_Id = ?");
         if (!$stmt->execute([$albumId])) {
             $errorInfo = $stmt->errorInfo();
-            throw new Exception("Error updating album: " . $errorInfo[2]);
+            throw new Exception("Error deleting album: " . $errorInfo[2]);
         }
+        rmdir("uploads/album_$albumId/thumbnails");
+        rmdir("uploads/album_$albumId");
     }
 
 

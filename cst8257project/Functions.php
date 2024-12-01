@@ -21,7 +21,7 @@ function getUserByIdAndPassword($userId, $password) {
 
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($row && password_verify($password, $row['Password'])) {
-        return new User($row['UserId'], $row['Name'], $row['Phone'], $row['Password']);
+        return new User($row['UserId'], $row['Name'], $row['Phone']);
     }
     return null;
 }

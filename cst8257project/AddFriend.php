@@ -84,7 +84,7 @@ include("./common/header.php");
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <h1 class="mb-2 animated-border display-6">My Albums</h1>
+    <h1 class="mb-2 animated-border display-6">Add Friends</h1>
         <p class="text-center">Welcome <b><?php echo htmlspecialchars($user->getName()); ?></b>! (Not you? <a href="Login.php">change user here</a>)</p>
     <style>
         .alert {
