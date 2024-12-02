@@ -64,11 +64,11 @@ if (isset($_GET['delete_album'])) {
             <div id="successMessage" class="alert alert-success disappearing-message"><?php echo $successMessage; ?></div>
         <?php endif;
         if (empty($albums)) { ?>
-            <p class="fs-5 my-5 text-center lead">You do not have any albums. <a href="AddAlbum.php">Create a New Album</a></p>
+            <p class="fs-5 my-5 text-center lead">You do not have any albums. <a href="AddAlbum.php">Create a New Album.</a></p>
         <?php } else { ?>
             <form method="post" action="MyAlbums.php" style="max-width: 80vw;" class="ms-3">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped mb-5">
+                    <table class="table table-bordered table-striped mb-5 text-center">
                         <thead>
                             <tr>
                                 <th style="width: 20%;">Title</th>
@@ -93,15 +93,18 @@ if (isset($_GET['delete_album'])) {
                                         </select>
                                     </td>
                                     <td>
-                                        <a href="MyAlbums.php?delete_album=<?php echo $album['Album_Id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this album? All pictures in the album will be deleted.');">Delete</a>
+                                        <a href="MyAlbums.php?delete_album=<?php echo $album['Album_Id']; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this album? All pictures in the album will be deleted.');">Delete</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
-                <button type="submit" name="save_changes" class="btn btn-success btn-sm me-3">Save Changes</button>
-                <a href="AddAlbum.php" class="btn btn-primary btn-sm" style="text-decoration: none;">New Album</a>
+                <div class="mb-2">
+                    <button type="submit" name="save_changes" class="btn btn-success btn-sm me-2">Save Changes</button>
+                    <a href="AddAlbum.php" class="btn btn-primary btn-sm" style="text-decoration: none;">New Album</a>
+                </div>
+
             </form>
         <?php }
         ?>

@@ -120,7 +120,7 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </p>
 
             <!-- Friends List -->
-            <div class="card mb-4">
+            <div class="card mb-4" style="min-height: 300px;">
                 <div class="card-header bg-primary bg-gradient text-white">
                     <h4>Friends List</h4>
                 </div>
@@ -171,7 +171,7 @@ $friendRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <!-- Friend Requests -->
-            <div class="card mb-4">
+            <div class="card mb-4"style="min-height: 300px;">
                 <div class="card-header bg-primary bg-gradient text-white">
                     <h4>Friend Requests</h4>
                 </div>

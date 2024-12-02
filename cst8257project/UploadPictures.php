@@ -72,7 +72,7 @@ $albums = $user->fetchAllAlbums();
 include("./common/header.php");
 ?>
 <div class="container mb-5 mt-3">
-    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: 60vw; margin: auto;">
+    <div class="shadow py-2 px-3 mb-5 bg-body-tertiary rounded" style="max-width: 60vw; min-height:380px; margin: auto;">
         <div class="card-body">
             <h1 class="card-title text-center text-dark mb-3 display-6 animated-border">Upload Pictures</h1>
             <div class="container">
@@ -86,7 +86,7 @@ include("./common/header.php");
                             </ul>
                         </small>
                     </div>
-                    <hr>
+                    
                     <?php if (!empty($successMessage)): ?>
                         <div class="alert alert-success text-center mt-2 disappearing-message" role="alert">
                             <?php echo $successMessage; ?>
@@ -121,7 +121,7 @@ include("./common/header.php");
                         </div>
                     </form>
                 <?php else: ?>
-                    <div class="fs-5 text-center my-5" role="alert">
+                    <div class="lead fs-5 text-center my-5 pt-4" role="alert">
                         You do not have any albums. Please <a href="AddAlbum.php">create an album</a> first.
                     </div>
                 <?php endif; ?>

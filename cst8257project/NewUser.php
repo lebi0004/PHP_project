@@ -6,7 +6,6 @@ ini_set('display_errors', 1);
 include_once("./common/header.php");
 include_once "Functions.php";
 include_once "EntityClassLib.php";
-// session_start();
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start(); // Start session only if not already started
@@ -75,7 +74,7 @@ if (isset($regSubmit)) {
 
 <section class="container text-start mb-5 mt-3">
     <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6">
+        <div class="col-12 col-md-8 col-lg-7">
             <form action="NewUser.php" method="post" class="p-4 border bg bg-light rounded shadow">
                 <div class="text-center">
                     <h1 class="display-4 animated-border">Sign up</h1>
@@ -123,8 +122,8 @@ if (isset($regSubmit)) {
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" name="regSubmit" class="btn btn-primary">Submit</button>
-                    <button type="reset" class="btn btn-secondary">Clear</button>
+                    <button type="submit" name="regSubmit" class="btn btn-primary me-2">Submit</button>
+                    <button type="reset" class="btn btn-outline-secondary">Clear</button>
                 </div>
             </form>
         </div>

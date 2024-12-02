@@ -21,9 +21,8 @@ if (isset($btnLogin)) {
 
             // Check if there's a redirect URL stored in session
             $redirectUrl = isset($_SESSION['redirect_url']) ? $_SESSION['redirect_url'] : 'index.php';
-            // Clear the redirect URL from session
 
-            // Redirect to the stored page or default to CourseSelection.php
+            // Redirect to the stored page
             header("Location: $redirectUrl");
             exit();
         } else {
@@ -64,8 +63,8 @@ if (isset($btnLogin)) {
 
                 <div class="row mb-3">
                     <div class="col-sm-6 offset-sm-4">
-                        <button type="submit" name='btnLogin' class="btn btn-primary">Login</button>
-                        <button type="reset" class="btn btn-secondary">Clear</button>
+                        <button type="submit" name='btnLogin' class="btn btn-primary me-2">Login</button>
+                        <button type="reset" class="btn btn-outline-secondary">Clear</button>
                     </div>
                 </div>
             </form>

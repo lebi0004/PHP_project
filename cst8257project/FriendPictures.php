@@ -36,21 +36,22 @@ if (!$friendData) {
 $friend = new User(
     $friendData['UserId'],
     $friendData['Name'],
-    $friendData['Phone'] ?? null, // Optional if the phone column exists
-    $friendData['Password'] ?? null // Optional if password is required
+    $friendData['Phone'] ?? null, 
+    $friendData['Password'] ?? null 
 );
 
-// Set other fields as needed...
 
 // Fetch the friend's shared albums
 $friendAlbums = $friend->fetchAllAlbums($accessibilityCode = 'shared');
+$friendAlbumIds = array_map(function ($album) {
+    return $album->getAlbumId();
+}, $friendAlbums);
 
-// Handle album selection
 $selectedAlbumId = isset($_GET['album_id']) ? intval($_GET['album_id']) : null;
 $selectedAlbum = null;
 $errorMessage = '';
 
-if ($selectedAlbumId) {
+if ($selectedAlbumId && in_array($selectedAlbumId, $friendAlbumIds)) {
     try {
         $selectedAlbum = Album::read($selectedAlbumId);
         if ($selectedAlbum->getOwnerId() !== $friend->getUserId()) {
@@ -62,7 +63,7 @@ if ($selectedAlbumId) {
     }
 }
 
-// Handle picture selection
+
 if ($selectedAlbum) {
     $pictures = $selectedAlbum->fetchAllPictures();
     $selectedPictureId = isset($_GET['picture_id']) ? intval($_GET['picture_id']) : null;
@@ -109,7 +110,7 @@ require_once("./common/header.php");
     Your friend <?= htmlspecialchars($friend->getName()) ?>'s Shared Pictures
 </h1>
 <div class="container mt-5">
-    <div class="row mx-3">
+    <div class="row mx-3 <?= count($friendAlbums) < 1 ? "d-none" : '' ?>">
         <div class="col-md-8">
             <form method="GET" action="FriendPictures.php">
                 <input type="hidden" name="friendId" value="<?= htmlspecialchars($friendId); ?>">
@@ -151,12 +152,12 @@ require_once("./common/header.php");
                     </div>
                     <div class="col-md-4 mb-5">
                         <div class="text-section">
-                            <h5 class="mt-0"><?= htmlspecialchars($selectedPicture->getTitle()); ?></h5>
+                            <h5 class="mt-0 display-6" style="color:#007BFF;"><?= htmlspecialchars($selectedPicture->getTitle()); ?></h5>
                             <p><strong>Description: </strong><?= !empty(htmlspecialchars($selectedPicture->getDescription())) ? htmlspecialchars($selectedPicture->getDescription()) : "No description found."; ?></p>
                             <?php
                             $comments = $selectedPicture->fetchComments();
                             if (!empty($comments)): ?>
-                                <h6 class="mt-4">Comments</h6>
+                                <h6 class="mt-4">Comments:</h6>
                                 <div class="comments-section">
                                     <?php foreach ($comments as $comment): ?>
                                         <div class="comment mb-2">
@@ -182,10 +183,14 @@ require_once("./common/header.php");
                 <div class="alert alert-danger disappearing-message">Picture not found.</div>
             <?php endif; ?>
         <?php else: ?>
-            <div class="alert alert-info ms-4">No pictures in this album.</div>
+            <div class="row mx-3">
+            <div class="lead col-8 mt-4">No pictures in this album.</div>
+            </div>
         <?php endif; ?>
     <?php else: ?>
-        <p class="lead fs-5 text-center ms-4 mt-4"><?= count($friendAlbums) < 1 ? "This friend has no shared albums." : "Please select an album to view pictures." ?></p>
+        <div class="row mx-3">
+            <p class="lead fs-5 text-start mt-4"><?= count($friendAlbums) < 1 ? '<div class="text-center lead">This friend has no shared albums.' : "Please select an album to view pictures." ?></p>
+        </div>
     <?php endif; ?>
 </div>
 <?php require_once("./common/footer.php"); ?>

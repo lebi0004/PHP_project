@@ -1,6 +1,6 @@
 <?php
-// Include necessary files before starting session
-include_once 'EntityClassLib.php'; // Ensure User class is included
+
+include_once 'EntityClassLib.php';
 include_once 'Functions.php';
 include("./common/header.php"); 
 

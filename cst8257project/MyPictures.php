@@ -17,7 +17,7 @@ if (!isset($_SESSION['user']) || !($_SESSION['user'] instanceof User)) {
 $user = $_SESSION['user'];
 $userAlbums = $user->fetchAllAlbums();
 
-// Handle album selection
+
 $selectedAlbumId = isset($_GET['album_id']) ? intval($_GET['album_id']) : null;
 $selectedAlbum = null;
 $errorMessage = '';
@@ -77,11 +77,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_comment'])) {
 
 require_once("./common/header.php");
 ?>
-<h1 class="card-title text-center text-dark my-3 display-6 animated-border">
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+</style>
+<h1 class="card-title text-center text-dark mt-3 mb-1 display-6 animated-border">
     My Pictures
 </h1>
-<div class="container mt-5">
-    <div class="row mx-3">
+<div class="container mt-3">
+    <div class="row mx-3 <?= count($userAlbums) < 1 ? "d-none" : '' ?>">
         <div class="col-md-8">
             <form method="GET" action="MyPictures.php">
                 <div class="mb-3">
@@ -122,12 +127,12 @@ require_once("./common/header.php");
                     </div>
                     <div class="col-md-4 mb-5">
                         <div class="text-section">
-                            <h5 class="mt-0"><?= htmlspecialchars($selectedPicture->getTitle()); ?></h5>
+                            <h5 class="mt-0 display-6" style="color:#007BFF;"><?= htmlspecialchars($selectedPicture->getTitle()); ?></h5>
                             <p><strong>Description: </strong><?= !empty(htmlspecialchars($selectedPicture->getDescription())) ? htmlspecialchars($selectedPicture->getDescription()) : "No description found."; ?></p>
                             <?php
                             $comments = $selectedPicture->fetchComments();
                             if (!empty($comments)): ?>
-                                <h6 class="mt-4">Comments</h6>
+                                <h6 class="mt-4">Comments:</h6>
                                 <div class="comments-section">
                                     <?php foreach ($comments as $comment): ?>
                                         <div class="comment mb-2">
@@ -153,10 +158,14 @@ require_once("./common/header.php");
                 <div class="alert alert-danger disappearing-message">Picture not found.</div>
             <?php endif; ?>
         <?php else: ?>
-            <div class="alert alert-info ms-4">No pictures in this album.</div>
+            <div class="row mx-3">
+                <div class="lead col-8 mt-4">No pictures in this album. <a href="UploadPictures.php">Upload pictures.</a></div>
+            </div>
         <?php endif; ?>
     <?php else: ?>
-        <p class="lead fs-5 text-center ms-4 mt-4"><?= count($userAlbums) < 1 ? "You have no albums." : "Please select an album to view pictures." ?></p>
+        <div class="row mx-3">
+            <p class="lead fs-5 text-start mt-4"><?= count($userAlbums) < 1 ? '<div class="text-center lead">You do not have any albums. <a href="AddAlbum.php">Create a New Album.</a></div>' : "Please select an album to view pictures." ?></p>
+        </div>
     <?php endif; ?>
 </div>
 <?php require_once("./common/footer.php"); ?>
